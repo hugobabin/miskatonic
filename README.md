@@ -8,7 +8,8 @@ Lorem ipsum dolor sit amet.
 - Hugo Babin ()
 
 ## Stack technique
-Python 3.12 / FastAPI
-SQLite / MongoDB
+- Python 3.12 / FastAPI
+- SQLite / MongoDB
 
 ## Work In Progress !
+
