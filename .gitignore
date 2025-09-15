@@ -1,2 +1,6 @@
 .venv
 .env
+db/mongodb
+docker-compose.yml
+frontend/Dockerfile
+backend/Dockerfile
