@@ -1,0 +1,15 @@
+{
+  "question": "Que signifie le sigle No-SQL ?",
+  "subject": "BDD",
+  "use": "Test de positionnement",
+  "correct": "A",
+  "responses": [
+    { "id": "A", "text": "Pas seulement SQL" },
+    { "id": "B", "text": "Pas de SQL" },
+    { "id": "C", "text": "Pas tout SQL" }
+  ],
+  "remark": null,
+  "metadata": { "author": "enseignant_X"},
+  "date_creation": { "$date": "2025-09-17" },
+  "date_modification": { "$date": "2025-09-17" }
+}
