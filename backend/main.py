@@ -1,9 +1,22 @@
-from fastapi import FastAPI
-from fastapi.responses import PlainTextResponse, JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
-from random import randint
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, PlainTextResponse
+from services.mongo import ServiceMongo
+from services.quiz import ServiceQuiz
+from models.quiz import Quiz
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):  # noqa: ANN201, ARG001
+    """Handle MongoDB connection along app's lifespan."""
+    ServiceMongo.connect()
+    yield
+    ServiceMongo.disconnect()
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -15,18 +28,13 @@ app.add_middleware(
 
 
 @app.get("/hello")
-async def root():
-    """
-    returns Hello
-    """
-    return PlainTextResponse("Hello !")
+async def root() -> PlainTextResponse:
+    """Hello World."""
+    return PlainTextResponse("Hello!")
 
 
-@app.get("/random")
-async def random():
-    """
-    random numb
-    """
-    for i in range(1, 100000000):
-        pass
-    return JSONResponse({"random_number": randint(1, 999)})
+@app.get("/quiz/generate")
+async def generate_quiz() -> None:
+    ServiceQuiz.generate(
+        total_questions=2,
+    )
