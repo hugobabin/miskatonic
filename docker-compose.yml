@@ -1,0 +1,61 @@
+services:
+  mongo:
+    container_name: mongodb
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    env_file:
+      - .env
+    volumes:
+      - ./db/mongodb:/data/db
+    networks:
+      - miskatonic
+
+  mongo-express:
+    container_name: mongoexpress
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    env_file:
+      - .env
+    depends_on:
+      mongo:
+        condition: service_started
+
+  miskatonic-backend:
+    container_name: miskatonicback
+    ports:
+      - 8000:8000
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    volumes:
+      - ./backend:/usr/src/app
+    networks:
+      - miskatonic
+    depends_on:
+      mongo:
+        condition: service_started
+
+  miskatonic-frontend:
+    container_name: miskatonicfront
+    ports:
+      - 8080:8080
+    build:
+      context: frontend
+    volumes:
+      - ./frontend:/usr/src/app
+    networks:
+      - miskatonic
+    depends_on:
+      mongo:
+        condition: service_started
+      miskatonic-backend:
+        condition: service_started
+
+networks:
+  miskatonic:
+    driver:
+      bridge
