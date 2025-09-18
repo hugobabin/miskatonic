@@ -1,0 +1,543 @@
+timestamp;type_evenement;source;message
+2025-09-18 19:40:28;structure;questions.csv;Missing columns: ['responseA', 'responseB', 'responseC', 'responseD']
+2025-09-18 19:41:01;structure;questions.csv;Missing columns: ['responseA', 'responseB', 'responseC', 'responseD']
+2025-09-18 19:44:41;read_ok;questions.csv;76 rows to process
+2025-09-18 19:46:09;read_ok;questions.csv;76 rows to process
+2025-09-18 19:49:35;read_ok;questions.csv;76 rows to process
+2025-09-18 20:20:57;read_ok;questions.csv;76 rows to process
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Que signifie le sigle No-SQL ?'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Cassandra et HBase sont des bases de données'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='MongoDB et CouchDB sont des bases de données'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='OrientDB et Neo4J sont des bases de données'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Pour indexer des données textuelles, je peux utiliser'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='A quoi faire attention lorsqu'on choisit un système de base de données ?'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Quels sont les trois éléments constitutifs de Hadoop ?'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;"count=3 correct=1 q='Lors de l'étape de Map d'un wordcount appliqué à la phrase ""cette phrase est une phrase"", les valeurs émises sont:'"
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Dans Hadoop, les combiners permettent'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Dans Hadoop, les partitioners permettent'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Le théorème CAP oppose'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Hive permet'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Spark se différencie de Hadoop par'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=2 correct=1 q='Un système de messagerie asynchrone permet de décorréler les consommateurs et les producteurs'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Kafka est système de messagerie'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='L'architecture lambda présente les couches'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Docker est utilisé'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Docker permet de persister des changements'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Des containers Docker peuvent communiquer entre eux grâce à'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='DockerHub est'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Docker-compose est'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Lequel de ces problème est un problème de classification:'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=6 correct=3 q='Lequel de ces problème est un problème de classification'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=2 correct=1 q='Est-ce que les algorithmes de classification permettent de donner une probabilité d’appartenance à une classe plutôt que simplement l’étiquette?'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Quelle métrique est utilisée en classification ?'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Quel algorithme est mieux adapté à un jeu de données majoritairement composé de variables qualitatives?'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=2 correct=1 q='Dans un problème de fraude bancaire, la précision est-elle une métrique adaptée?'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='De donner une meilleure métrique dans toutes les situations'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='La spécificité est définie par (V: vrai, F: faux, P: positif, N: négatif) :'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='La sensibilité est définie par (V: vrai, F: faux, P: positif, N: négatif) :'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Hadoop permet de:'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Dans le paradigme MapReduce, les combiners servent à:'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Dans le paradigme MapReduce, les partitioners servent à:'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='L'utilisation de systèmes distrubués permet'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Hadoop streaming est un outil qui permet'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Dans le cas d'une architecture distribuée, le théorème CAP nous oblige à choisir entre:'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Hive est'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Pour Hive, partitioner consiste à'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Pig permet'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Sqoop est utilisé'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Data science is ...'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=2 correct=1 q='Its applications are ...'
+2025-09-18 20:20:57;validation;questions.csv;What are the first things you want to do when you start a Data Science project ? -> MISSING_CORRECT
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Are every datasets worth a Data Science project ?'
+2025-09-18 20:20:57;validation;questions.csv;When the dataset is all set and obtained, what do you need to do ? -> MISSING_CORRECT
+2025-09-18 20:20:57;validation;questions.csv;What are the best tools you can use when starting a project? -> MISSING_CORRECT
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=2 correct=1 q='When building a model, you have to'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=2 correct=1 q='Your model is all done and working, what's next?'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='What is Machine learning ?'
+2025-09-18 20:20:57;validation;questions.csv;Supervised learning ... -> MISSING_CORRECT
+2025-09-18 20:20:57;validation;questions.csv;Unsupervised learning ... -> MISSING_CORRECT
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Classification'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Regression'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Overfitting is'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=2 q='A way to handle imbalanced datasets is'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Pourquoi utiliser des APIs?'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='En utilisant Flask, on permet à un utilisateur ou à une machine d'utiliser un service avec'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Pourquoi utiliser Docker?'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Si on fait un parallèle avec la programmation orientée objet, les images de containers Docker sont l'équivalent des'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Pour faciliter le passage de fichiers entre la machine hôte et un container Docker, on peut utiliser les'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Pour faciliter la communication entre la machine hôte et un container Docker, on peut utiliser les'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Quelle commande permet de lancer un container Docker ?'
+2025-09-18 20:20:57;DUPLICATE_OPTION_IGNORED;questions.csv;answer='A répertorier les images publiques de containers'
+2025-09-18 20:20:57;DUPLICATE_OPTION_MERGED;questions.csv;answer='A déployer plusieurs containers en même temps'
+2025-09-18 20:20:57;DUPLICATE_OPTION_IGNORED;questions.csv;answer='A créer sa propre image Docker'
+2025-09-18 20:20:57;DUPLICATE_OPTION_IGNORED;questions.csv;answer='Tous ces points'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=2 q='A quoi sert Docker-Compose ?'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Dans Airflow, le DAG répertorie'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=3 correct=1 q='Quelle est la différence entre le processing time et le event time ?'
+2025-09-18 20:20:57;GROUP_OK;questions.csv;count=4 correct=1 q='Kafka est un système de messagerie'
+2025-09-18 20:20:57;validation;questions.csv;Dans Kafka, les brokers permettent de -> MISSING_CORRECT
+2025-09-18 20:20:57;validation;questions.csv;Dans Kafka, dans un consumer group, les consommateurs accédent -> MISSING_CORRECT
+2025-09-18 20:20:57;validation;questions.csv;Quelle est la différence entre Hadoop et Spark? -> MISSING_CORRECT
+2025-09-18 20:20:57;validation;questions.csv;Quelle librairie de Spark n’existe pas ? -> MISSING_CORRECT
+2025-09-18 20:20:57;validation;questions.csv;Que signigie RDD ? -> MISSING_CORRECT
+2025-09-18 20:20:57;validation;questions.csv;Qu’est-ce que le DAG ? -> MISSING_CORRECT
+2025-09-18 20:20:57;validation;questions.csv;Les Dstreams sont définis par -> MISSING_CORRECT
+2025-09-18 20:20:57;validation;questions.csv;Dans HBase, les données sont stockées par -> MISSING_CORRECT
+2025-09-18 20:28:08;read_ok;questions.csv;76 rows to process
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Que signifie le sigle No-SQL ?'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Cassandra et HBase sont des bases de données'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='MongoDB et CouchDB sont des bases de données'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='OrientDB et Neo4J sont des bases de données'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Pour indexer des données textuelles, je peux utiliser'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='A quoi faire attention lorsqu'on choisit un système de base de données ?'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Quels sont les trois éléments constitutifs de Hadoop ?'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;"count=3 correct=1 q='Lors de l'étape de Map d'un wordcount appliqué à la phrase ""cette phrase est une phrase"", les valeurs émises sont:'"
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Dans Hadoop, les combiners permettent'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Dans Hadoop, les partitioners permettent'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Le théorème CAP oppose'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Hive permet'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Spark se différencie de Hadoop par'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=2 correct=1 q='Un système de messagerie asynchrone permet de décorréler les consommateurs et les producteurs'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Kafka est système de messagerie'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='L'architecture lambda présente les couches'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Docker est utilisé'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Docker permet de persister des changements'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Des containers Docker peuvent communiquer entre eux grâce à'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='DockerHub est'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Docker-compose est'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Lequel de ces problème est un problème de classification:'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=6 correct=3 q='Lequel de ces problème est un problème de classification'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=2 correct=1 q='Est-ce que les algorithmes de classification permettent de donner une probabilité d’appartenance à une classe plutôt que simplement l’étiquette?'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Quelle métrique est utilisée en classification ?'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Quel algorithme est mieux adapté à un jeu de données majoritairement composé de variables qualitatives?'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=2 correct=1 q='Dans un problème de fraude bancaire, la précision est-elle une métrique adaptée?'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='De donner une meilleure métrique dans toutes les situations'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='La spécificité est définie par (V: vrai, F: faux, P: positif, N: négatif) :'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='La sensibilité est définie par (V: vrai, F: faux, P: positif, N: négatif) :'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Hadoop permet de:'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Dans le paradigme MapReduce, les combiners servent à:'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Dans le paradigme MapReduce, les partitioners servent à:'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='L'utilisation de systèmes distrubués permet'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Hadoop streaming est un outil qui permet'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Dans le cas d'une architecture distribuée, le théorème CAP nous oblige à choisir entre:'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Hive est'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Pour Hive, partitioner consiste à'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Pig permet'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Sqoop est utilisé'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Data science is ...'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=2 correct=1 q='Its applications are ...'
+2025-09-18 20:28:08;validation;questions.csv;What are the first things you want to do when you start a Data Science project ? -> MISSING_CORRECT
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Are every datasets worth a Data Science project ?'
+2025-09-18 20:28:08;validation;questions.csv;When the dataset is all set and obtained, what do you need to do ? -> MISSING_CORRECT
+2025-09-18 20:28:08;validation;questions.csv;What are the best tools you can use when starting a project? -> MISSING_CORRECT
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=2 correct=1 q='When building a model, you have to'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=2 correct=1 q='Your model is all done and working, what's next?'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='What is Machine learning ?'
+2025-09-18 20:28:08;validation;questions.csv;Supervised learning ... -> MISSING_CORRECT
+2025-09-18 20:28:08;validation;questions.csv;Unsupervised learning ... -> MISSING_CORRECT
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Classification'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Regression'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Overfitting is'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=2 q='A way to handle imbalanced datasets is'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Pourquoi utiliser des APIs?'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='En utilisant Flask, on permet à un utilisateur ou à une machine d'utiliser un service avec'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Pourquoi utiliser Docker?'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Si on fait un parallèle avec la programmation orientée objet, les images de containers Docker sont l'équivalent des'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Pour faciliter le passage de fichiers entre la machine hôte et un container Docker, on peut utiliser les'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Pour faciliter la communication entre la machine hôte et un container Docker, on peut utiliser les'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Quelle commande permet de lancer un container Docker ?'
+2025-09-18 20:28:08;DUPLICATE_OPTION_IGNORED;questions.csv;answer='A répertorier les images publiques de containers'
+2025-09-18 20:28:08;DUPLICATE_OPTION_MERGED;questions.csv;answer='A déployer plusieurs containers en même temps'
+2025-09-18 20:28:08;DUPLICATE_OPTION_IGNORED;questions.csv;answer='A créer sa propre image Docker'
+2025-09-18 20:28:08;DUPLICATE_OPTION_IGNORED;questions.csv;answer='Tous ces points'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=2 q='A quoi sert Docker-Compose ?'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Dans Airflow, le DAG répertorie'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=3 correct=1 q='Quelle est la différence entre le processing time et le event time ?'
+2025-09-18 20:28:08;GROUP_OK;questions.csv;count=4 correct=1 q='Kafka est un système de messagerie'
+2025-09-18 20:28:08;validation;questions.csv;Dans Kafka, les brokers permettent de -> MISSING_CORRECT
+2025-09-18 20:28:08;validation;questions.csv;Dans Kafka, dans un consumer group, les consommateurs accédent -> MISSING_CORRECT
+2025-09-18 20:28:08;validation;questions.csv;Quelle est la différence entre Hadoop et Spark? -> MISSING_CORRECT
+2025-09-18 20:28:08;validation;questions.csv;Quelle librairie de Spark n’existe pas ? -> MISSING_CORRECT
+2025-09-18 20:28:08;validation;questions.csv;Que signigie RDD ? -> MISSING_CORRECT
+2025-09-18 20:28:08;validation;questions.csv;Qu’est-ce que le DAG ? -> MISSING_CORRECT
+2025-09-18 20:28:08;validation;questions.csv;Les Dstreams sont définis par -> MISSING_CORRECT
+2025-09-18 20:28:08;validation;questions.csv;Dans HBase, les données sont stockées par -> MISSING_CORRECT
+2025-09-18 20:48:00;read_ok;questions.csv;76 rows to process;;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Que signifie le sigle No-SQL ?';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='Cassandra et HBase sont des bases de données';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='MongoDB et CouchDB sont des bases de données';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='OrientDB et Neo4J sont des bases de données';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Pour indexer des données textuelles, je peux utiliser';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='A quoi faire attention lorsqu'on choisit un système de base de données ?';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Quels sont les trois éléments constitutifs de Hadoop ?';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;"count=3 correct=1 q='Lors de l'étape de Map d'un wordcount appliqué à la phrase ""cette phrase est une phrase"", les valeurs émises sont:'";;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Dans Hadoop, les combiners permettent';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Dans Hadoop, les partitioners permettent';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Le théorème CAP oppose';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Hive permet';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='Spark se différencie de Hadoop par';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=2 correct=1 q='Un système de messagerie asynchrone permet de décorréler les consommateurs et les producteurs';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='Kafka est système de messagerie';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='L'architecture lambda présente les couches';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Docker est utilisé';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Docker permet de persister des changements';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Des containers Docker peuvent communiquer entre eux grâce à';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='DockerHub est';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Docker-compose est';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Lequel de ces problème est un problème de classification:';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=6 correct=3 q='Lequel de ces problème est un problème de classification';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=2 correct=1 q='Est-ce que les algorithmes de classification permettent de donner une probabilité d’appartenance à une classe plutôt que simplement l’étiquette?';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Quelle métrique est utilisée en classification ?';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Quel algorithme est mieux adapté à un jeu de données majoritairement composé de variables qualitatives?';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=2 correct=1 q='Dans un problème de fraude bancaire, la précision est-elle une métrique adaptée?';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='De donner une meilleure métrique dans toutes les situations';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='La spécificité est définie par (V: vrai, F: faux, P: positif, N: négatif) :';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='La sensibilité est définie par (V: vrai, F: faux, P: positif, N: négatif) :';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='Hadoop permet de:';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='Dans le paradigme MapReduce, les combiners servent à:';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='Dans le paradigme MapReduce, les partitioners servent à:';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='L'utilisation de systèmes distrubués permet';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='Hadoop streaming est un outil qui permet';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Dans le cas d'une architecture distribuée, le théorème CAP nous oblige à choisir entre:';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Hive est';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Pour Hive, partitioner consiste à';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='Pig permet';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='Sqoop est utilisé';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Data science is ...';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=2 correct=1 q='Its applications are ...';;
+2025-09-18 20:48:00;validation;questions.csv;What are the first things you want to do when you start a Data Science project ? -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Are every datasets worth a Data Science project ?';;
+2025-09-18 20:48:00;validation;questions.csv;When the dataset is all set and obtained, what do you need to do ? -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:48:00;validation;questions.csv;What are the best tools you can use when starting a project? -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=2 correct=1 q='When building a model, you have to';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=2 correct=1 q='Your model is all done and working, what's next?';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='What is Machine learning ?';;
+2025-09-18 20:48:00;validation;questions.csv;Supervised learning ... -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:48:00;validation;questions.csv;Unsupervised learning ... -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Classification';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Regression';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=1 q='Overfitting is';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=3 correct=2 q='A way to handle imbalanced datasets is';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='Pourquoi utiliser des APIs?';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='En utilisant Flask, on permet à un utilisateur ou à une machine d'utiliser un service avec';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='Pourquoi utiliser Docker?';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='Si on fait un parallèle avec la programmation orientée objet, les images de containers Docker sont l'équivalent des';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='Pour faciliter le passage de fichiers entre la machine hôte et un container Docker, on peut utiliser les';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='Pour faciliter la communication entre la machine hôte et un container Docker, on peut utiliser les';;
+2025-09-18 20:48:00;GROUP_OK;questions.csv;count=4 correct=1 q='Quelle commande permet de lancer un container Docker ?';;
+2025-09-18 20:49:48;read_ok;questions.csv;76 rows to process;;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Que signifie le sigle No-SQL ?';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Cassandra et HBase sont des bases de données';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='MongoDB et CouchDB sont des bases de données';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='OrientDB et Neo4J sont des bases de données';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Pour indexer des données textuelles, je peux utiliser';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='A quoi faire attention lorsqu'on choisit un système de base de données ?';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Quels sont les trois éléments constitutifs de Hadoop ?';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;"count=3 correct=1 q='Lors de l'étape de Map d'un wordcount appliqué à la phrase ""cette phrase est une phrase"", les valeurs émises sont:'";;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Dans Hadoop, les combiners permettent';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Dans Hadoop, les partitioners permettent';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Le théorème CAP oppose';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Hive permet';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Spark se différencie de Hadoop par';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=2 correct=1 q='Un système de messagerie asynchrone permet de décorréler les consommateurs et les producteurs';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Kafka est système de messagerie';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='L'architecture lambda présente les couches';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Docker est utilisé';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Docker permet de persister des changements';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Des containers Docker peuvent communiquer entre eux grâce à';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='DockerHub est';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Docker-compose est';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Lequel de ces problème est un problème de classification:';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=6 correct=3 q='Lequel de ces problème est un problème de classification';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=2 correct=1 q='Est-ce que les algorithmes de classification permettent de donner une probabilité d’appartenance à une classe plutôt que simplement l’étiquette?';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Quelle métrique est utilisée en classification ?';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Quel algorithme est mieux adapté à un jeu de données majoritairement composé de variables qualitatives?';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=2 correct=1 q='Dans un problème de fraude bancaire, la précision est-elle une métrique adaptée?';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='De donner une meilleure métrique dans toutes les situations';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='La spécificité est définie par (V: vrai, F: faux, P: positif, N: négatif) :';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='La sensibilité est définie par (V: vrai, F: faux, P: positif, N: négatif) :';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Hadoop permet de:';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Dans le paradigme MapReduce, les combiners servent à:';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Dans le paradigme MapReduce, les partitioners servent à:';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='L'utilisation de systèmes distrubués permet';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Hadoop streaming est un outil qui permet';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Dans le cas d'une architecture distribuée, le théorème CAP nous oblige à choisir entre:';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Hive est';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Pour Hive, partitioner consiste à';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Pig permet';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Sqoop est utilisé';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Data science is ...';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=2 correct=1 q='Its applications are ...';;
+2025-09-18 20:49:48;validation;questions.csv;What are the first things you want to do when you start a Data Science project ? -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Are every datasets worth a Data Science project ?';;
+2025-09-18 20:49:48;validation;questions.csv;When the dataset is all set and obtained, what do you need to do ? -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:49:48;validation;questions.csv;What are the best tools you can use when starting a project? -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=2 correct=1 q='When building a model, you have to';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=2 correct=1 q='Your model is all done and working, what's next?';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='What is Machine learning ?';;
+2025-09-18 20:49:48;validation;questions.csv;Supervised learning ... -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:49:48;validation;questions.csv;Unsupervised learning ... -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Classification';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Regression';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Overfitting is';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=2 q='A way to handle imbalanced datasets is';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Pourquoi utiliser des APIs?';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='En utilisant Flask, on permet à un utilisateur ou à une machine d'utiliser un service avec';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Pourquoi utiliser Docker?';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Si on fait un parallèle avec la programmation orientée objet, les images de containers Docker sont l'équivalent des';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Pour faciliter le passage de fichiers entre la machine hôte et un container Docker, on peut utiliser les';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Pour faciliter la communication entre la machine hôte et un container Docker, on peut utiliser les';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Quelle commande permet de lancer un container Docker ?';;
+2025-09-18 20:49:48;DUPLICATE_OPTION_IGNORED;questions.csv;answer='A répertorier les images publiques de containers';questions.csv;65
+2025-09-18 20:49:48;DUPLICATE_OPTION_MERGED;questions.csv;answer='A déployer plusieurs containers en même temps';questions.csv;65
+2025-09-18 20:49:48;DUPLICATE_OPTION_IGNORED;questions.csv;answer='A créer sa propre image Docker';questions.csv;65
+2025-09-18 20:49:48;DUPLICATE_OPTION_IGNORED;questions.csv;answer='Tous ces points';questions.csv;65
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=2 q='A quoi sert Docker-Compose ?';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Dans Airflow, le DAG répertorie';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=3 correct=1 q='Quelle est la différence entre le processing time et le event time ?';;
+2025-09-18 20:49:48;GROUP_OK;questions.csv;count=4 correct=1 q='Kafka est un système de messagerie';;
+2025-09-18 20:49:48;validation;questions.csv;Dans Kafka, les brokers permettent de -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:49:48;validation;questions.csv;Dans Kafka, dans un consumer group, les consommateurs accédent -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:49:48;validation;questions.csv;Quelle est la différence entre Hadoop et Spark? -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:49:48;validation;questions.csv;Quelle librairie de Spark n’existe pas ? -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:49:48;validation;questions.csv;Que signigie RDD ? -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:49:48;validation;questions.csv;Qu’est-ce que le DAG ? -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:49:48;validation;questions.csv;Les Dstreams sont définis par -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:49:48;validation;questions.csv;Dans HBase, les données sont stockées par -> MISSING_CORRECT,file='questions.csv';;
+2025-09-18 20:54:27;read_ok;questions.csv;76 rows to process;;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Que signifie le sigle No-SQL ?';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Cassandra et HBase sont des bases de données';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='MongoDB et CouchDB sont des bases de données';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='OrientDB et Neo4J sont des bases de données';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Pour indexer des données textuelles, je peux utiliser';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='A quoi faire attention lorsqu'on choisit un système de base de données ?';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Quels sont les trois éléments constitutifs de Hadoop ?';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;"count=3 correct=1 q='Lors de l'étape de Map d'un wordcount appliqué à la phrase ""cette phrase est une phrase"", les valeurs émises sont:'";;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Dans Hadoop, les combiners permettent';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Dans Hadoop, les partitioners permettent';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Le théorème CAP oppose';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Hive permet';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Spark se différencie de Hadoop par';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=2 correct=1 q='Un système de messagerie asynchrone permet de décorréler les consommateurs et les producteurs';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Kafka est système de messagerie';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='L'architecture lambda présente les couches';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Docker est utilisé';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Docker permet de persister des changements';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Des containers Docker peuvent communiquer entre eux grâce à';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='DockerHub est';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Docker-compose est';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Lequel de ces problème est un problème de classification:';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=6 correct=3 q='Lequel de ces problème est un problème de classification';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=2 correct=1 q='Est-ce que les algorithmes de classification permettent de donner une probabilité d’appartenance à une classe plutôt que simplement l’étiquette?';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Quelle métrique est utilisée en classification ?';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Quel algorithme est mieux adapté à un jeu de données majoritairement composé de variables qualitatives?';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=2 correct=1 q='Dans un problème de fraude bancaire, la précision est-elle une métrique adaptée?';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='De donner une meilleure métrique dans toutes les situations';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='La spécificité est définie par (V: vrai, F: faux, P: positif, N: négatif) :';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='La sensibilité est définie par (V: vrai, F: faux, P: positif, N: négatif) :';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Hadoop permet de:';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Dans le paradigme MapReduce, les combiners servent à:';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Dans le paradigme MapReduce, les partitioners servent à:';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='L'utilisation de systèmes distrubués permet';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Hadoop streaming est un outil qui permet';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Dans le cas d'une architecture distribuée, le théorème CAP nous oblige à choisir entre:';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Hive est';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Pour Hive, partitioner consiste à';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Pig permet';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Sqoop est utilisé';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Data science is ...';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=2 correct=1 q='Its applications are ...';;
+2025-09-18 20:54:27;validation;questions.csv;What are the first things you want to do when you start a Data Science project ? -> MISSING_CORRECT,file='questions.csv';;44
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Are every datasets worth a Data Science project ?';;
+2025-09-18 20:54:27;validation;questions.csv;When the dataset is all set and obtained, what do you need to do ? -> MISSING_CORRECT,file='questions.csv';;46
+2025-09-18 20:54:27;validation;questions.csv;What are the best tools you can use when starting a project? -> MISSING_CORRECT,file='questions.csv';;47
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=2 correct=1 q='When building a model, you have to';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=2 correct=1 q='Your model is all done and working, what's next?';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='What is Machine learning ?';;
+2025-09-18 20:54:27;validation;questions.csv;Supervised learning ... -> MISSING_CORRECT,file='questions.csv';;51
+2025-09-18 20:54:27;validation;questions.csv;Unsupervised learning ... -> MISSING_CORRECT,file='questions.csv';;52
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Classification';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Regression';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Overfitting is';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=2 q='A way to handle imbalanced datasets is';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Pourquoi utiliser des APIs?';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='En utilisant Flask, on permet à un utilisateur ou à une machine d'utiliser un service avec';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Pourquoi utiliser Docker?';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Si on fait un parallèle avec la programmation orientée objet, les images de containers Docker sont l'équivalent des';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Pour faciliter le passage de fichiers entre la machine hôte et un container Docker, on peut utiliser les';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Pour faciliter la communication entre la machine hôte et un container Docker, on peut utiliser les';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Quelle commande permet de lancer un container Docker ?';;
+2025-09-18 20:54:27;DUPLICATE_OPTION_IGNORED;questions.csv;answer='A répertorier les images publiques de containers';questions.csv;65
+2025-09-18 20:54:27;DUPLICATE_OPTION_MERGED;questions.csv;answer='A déployer plusieurs containers en même temps';questions.csv;65
+2025-09-18 20:54:27;DUPLICATE_OPTION_IGNORED;questions.csv;answer='A créer sa propre image Docker';questions.csv;65
+2025-09-18 20:54:27;DUPLICATE_OPTION_IGNORED;questions.csv;answer='Tous ces points';questions.csv;65
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=2 q='A quoi sert Docker-Compose ?';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Dans Airflow, le DAG répertorie';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=3 correct=1 q='Quelle est la différence entre le processing time et le event time ?';;
+2025-09-18 20:54:27;GROUP_OK;questions.csv;count=4 correct=1 q='Kafka est un système de messagerie';;
+2025-09-18 20:54:27;validation;questions.csv;Dans Kafka, les brokers permettent de -> MISSING_CORRECT,file='questions.csv';;69
+2025-09-18 20:54:27;validation;questions.csv;Dans Kafka, dans un consumer group, les consommateurs accédent -> MISSING_CORRECT,file='questions.csv';;70
+2025-09-18 20:54:27;validation;questions.csv;Quelle est la différence entre Hadoop et Spark? -> MISSING_CORRECT,file='questions.csv';;71
+2025-09-18 20:54:27;validation;questions.csv;Quelle librairie de Spark n’existe pas ? -> MISSING_CORRECT,file='questions.csv';;72
+2025-09-18 20:54:27;validation;questions.csv;Que signigie RDD ? -> MISSING_CORRECT,file='questions.csv';;73
+2025-09-18 20:54:27;validation;questions.csv;Qu’est-ce que le DAG ? -> MISSING_CORRECT,file='questions.csv';;74
+2025-09-18 20:54:27;validation;questions.csv;Les Dstreams sont définis par -> MISSING_CORRECT,file='questions.csv';;75
+2025-09-18 20:54:27;validation;questions.csv;Dans HBase, les données sont stockées par -> MISSING_CORRECT,file='questions.csv';;76
+2025-09-18 21:06:30;read_ok;76 rows to process;questions.csv;
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Que signifie le sigle No-SQL ?';questions.csv;1
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Cassandra et HBase sont des bases de données';questions.csv;2
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='MongoDB et CouchDB sont des bases de données';questions.csv;3
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='OrientDB et Neo4J sont des bases de données';questions.csv;4
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Pour indexer des données textuelles, je peux utiliser';questions.csv;5
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='A quoi faire attention lorsqu'on choisit un système de base de données ?';questions.csv;6
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Quels sont les trois éléments constitutifs de Hadoop ?';questions.csv;7
+2025-09-18 21:06:30;GROUP_OK;"count=3 correct=1 q='Lors de l'étape de Map d'un wordcount appliqué à la phrase ""cette phrase est une phrase"", les valeurs émises sont:'";questions.csv;8
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Dans Hadoop, les combiners permettent';questions.csv;9
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Dans Hadoop, les partitioners permettent';questions.csv;10
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Le théorème CAP oppose';questions.csv;11
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Hive permet';questions.csv;12
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Spark se différencie de Hadoop par';questions.csv;13
+2025-09-18 21:06:30;GROUP_OK;count=2 correct=1 q='Un système de messagerie asynchrone permet de décorréler les consommateurs et les producteurs';questions.csv;14
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Kafka est système de messagerie';questions.csv;15
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='L'architecture lambda présente les couches';questions.csv;16
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Docker est utilisé';questions.csv;17
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Docker permet de persister des changements';questions.csv;18
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Des containers Docker peuvent communiquer entre eux grâce à';questions.csv;19
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='DockerHub est';questions.csv;20
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Docker-compose est';questions.csv;21
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Lequel de ces problème est un problème de classification:';questions.csv;22
+2025-09-18 21:06:30;GROUP_OK;count=6 correct=3 q='Lequel de ces problème est un problème de classification';questions.csv;23
+2025-09-18 21:06:30;GROUP_OK;count=2 correct=1 q='Est-ce que les algorithmes de classification permettent de donner une probabilité d’appartenance à une classe plutôt que simplement l’étiquette?';questions.csv;25
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Quelle métrique est utilisée en classification ?';questions.csv;26
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Quel algorithme est mieux adapté à un jeu de données majoritairement composé de variables qualitatives?';questions.csv;27
+2025-09-18 21:06:30;GROUP_OK;count=2 correct=1 q='Dans un problème de fraude bancaire, la précision est-elle une métrique adaptée?';questions.csv;28
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='De donner une meilleure métrique dans toutes les situations';questions.csv;29
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='La spécificité est définie par (V: vrai, F: faux, P: positif, N: négatif) :';questions.csv;30
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='La sensibilité est définie par (V: vrai, F: faux, P: positif, N: négatif) :';questions.csv;31
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Hadoop permet de:';questions.csv;32
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Dans le paradigme MapReduce, les combiners servent à:';questions.csv;33
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Dans le paradigme MapReduce, les partitioners servent à:';questions.csv;34
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='L'utilisation de systèmes distrubués permet';questions.csv;35
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Hadoop streaming est un outil qui permet';questions.csv;36
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Dans le cas d'une architecture distribuée, le théorème CAP nous oblige à choisir entre:';questions.csv;37
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Hive est';questions.csv;38
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Pour Hive, partitioner consiste à';questions.csv;39
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Pig permet';questions.csv;40
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Sqoop est utilisé';questions.csv;41
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Data science is ...';questions.csv;42
+2025-09-18 21:06:30;GROUP_OK;count=2 correct=1 q='Its applications are ...';questions.csv;43
+2025-09-18 21:06:30;validation;What are the first things you want to do when you start a Data Science project ? -> MISSING_CORRECT,file='questions.csv';;44
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Are every datasets worth a Data Science project ?';questions.csv;45
+2025-09-18 21:06:30;validation;When the dataset is all set and obtained, what do you need to do ? -> MISSING_CORRECT,file='questions.csv';;46
+2025-09-18 21:06:30;validation;What are the best tools you can use when starting a project? -> MISSING_CORRECT,file='questions.csv';;47
+2025-09-18 21:06:30;GROUP_OK;count=2 correct=1 q='When building a model, you have to';questions.csv;48
+2025-09-18 21:06:30;GROUP_OK;count=2 correct=1 q='Your model is all done and working, what's next?';questions.csv;49
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='What is Machine learning ?';questions.csv;50
+2025-09-18 21:06:30;validation;Supervised learning ... -> MISSING_CORRECT,file='questions.csv';;51
+2025-09-18 21:06:30;validation;Unsupervised learning ... -> MISSING_CORRECT,file='questions.csv';;52
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Classification';questions.csv;53
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Regression';questions.csv;54
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Overfitting is';questions.csv;55
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=2 q='A way to handle imbalanced datasets is';questions.csv;56
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Pourquoi utiliser des APIs?';questions.csv;57
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='En utilisant Flask, on permet à un utilisateur ou à une machine d'utiliser un service avec';questions.csv;58
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Pourquoi utiliser Docker?';questions.csv;59
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Si on fait un parallèle avec la programmation orientée objet, les images de containers Docker sont l'équivalent des';questions.csv;60
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Pour faciliter le passage de fichiers entre la machine hôte et un container Docker, on peut utiliser les';questions.csv;61
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Pour faciliter la communication entre la machine hôte et un container Docker, on peut utiliser les';questions.csv;62
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Quelle commande permet de lancer un container Docker ?';questions.csv;63
+2025-09-18 21:06:30;DUPLICATE_OPTION_IGNORED;answer='A répertorier les images publiques de containers';questions.csv;65
+2025-09-18 21:06:30;DUPLICATE_OPTION_MERGED;answer='A déployer plusieurs containers en même temps';questions.csv;65
+2025-09-18 21:06:30;DUPLICATE_OPTION_IGNORED;answer='A créer sa propre image Docker';questions.csv;65
+2025-09-18 21:06:30;DUPLICATE_OPTION_IGNORED;answer='Tous ces points';questions.csv;65
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=2 q='A quoi sert Docker-Compose ?';questions.csv;64
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Dans Airflow, le DAG répertorie';questions.csv;66
+2025-09-18 21:06:30;GROUP_OK;count=3 correct=1 q='Quelle est la différence entre le processing time et le event time ?';questions.csv;67
+2025-09-18 21:06:30;GROUP_OK;count=4 correct=1 q='Kafka est un système de messagerie';questions.csv;68
+2025-09-18 21:06:30;validation;Dans Kafka, les brokers permettent de -> MISSING_CORRECT,file='questions.csv';;69
+2025-09-18 21:06:30;validation;Dans Kafka, dans un consumer group, les consommateurs accédent -> MISSING_CORRECT,file='questions.csv';;70
+2025-09-18 21:06:30;validation;Quelle est la différence entre Hadoop et Spark? -> MISSING_CORRECT,file='questions.csv';;71
+2025-09-18 21:06:30;validation;Quelle librairie de Spark n’existe pas ? -> MISSING_CORRECT,file='questions.csv';;72
+2025-09-18 21:06:30;validation;Que signigie RDD ? -> MISSING_CORRECT,file='questions.csv';;73
+2025-09-18 21:06:30;validation;Qu’est-ce que le DAG ? -> MISSING_CORRECT,file='questions.csv';;74
+2025-09-18 21:06:30;validation;Les Dstreams sont définis par -> MISSING_CORRECT,file='questions.csv';;75
+2025-09-18 21:06:30;validation;Dans HBase, les données sont stockées par -> MISSING_CORRECT,file='questions.csv';;76
+2025-09-18 21:09:30;read_ok;76 rows to process;questions.csv;
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Que signifie le sigle No-SQL ?';questions.csv;1
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Cassandra et HBase sont des bases de données';questions.csv;2
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='MongoDB et CouchDB sont des bases de données';questions.csv;3
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='OrientDB et Neo4J sont des bases de données';questions.csv;4
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Pour indexer des données textuelles, je peux utiliser';questions.csv;5
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='A quoi faire attention lorsqu'on choisit un système de base de données ?';questions.csv;6
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Quels sont les trois éléments constitutifs de Hadoop ?';questions.csv;7
+2025-09-18 21:09:30;GROUP_OK;"count=3 correct=1 q='Lors de l'étape de Map d'un wordcount appliqué à la phrase ""cette phrase est une phrase"", les valeurs émises sont:'";questions.csv;8
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Dans Hadoop, les combiners permettent';questions.csv;9
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Dans Hadoop, les partitioners permettent';questions.csv;10
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Le théorème CAP oppose';questions.csv;11
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Hive permet';questions.csv;12
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Spark se différencie de Hadoop par';questions.csv;13
+2025-09-18 21:09:30;GROUP_OK;count=2 correct=1 q='Un système de messagerie asynchrone permet de décorréler les consommateurs et les producteurs';questions.csv;14
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Kafka est système de messagerie';questions.csv;15
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='L'architecture lambda présente les couches';questions.csv;16
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Docker est utilisé';questions.csv;17
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Docker permet de persister des changements';questions.csv;18
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Des containers Docker peuvent communiquer entre eux grâce à';questions.csv;19
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='DockerHub est';questions.csv;20
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Docker-compose est';questions.csv;21
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Lequel de ces problème est un problème de classification:';questions.csv;22
+2025-09-18 21:09:30;GROUP_OK;count=6 correct=3 q='Lequel de ces problème est un problème de classification';questions.csv;23
+2025-09-18 21:09:30;GROUP_OK;count=2 correct=1 q='Est-ce que les algorithmes de classification permettent de donner une probabilité d’appartenance à une classe plutôt que simplement l’étiquette?';questions.csv;25
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Quelle métrique est utilisée en classification ?';questions.csv;26
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Quel algorithme est mieux adapté à un jeu de données majoritairement composé de variables qualitatives?';questions.csv;27
+2025-09-18 21:09:30;GROUP_OK;count=2 correct=1 q='Dans un problème de fraude bancaire, la précision est-elle une métrique adaptée?';questions.csv;28
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='De donner une meilleure métrique dans toutes les situations';questions.csv;29
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='La spécificité est définie par (V: vrai, F: faux, P: positif, N: négatif) :';questions.csv;30
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='La sensibilité est définie par (V: vrai, F: faux, P: positif, N: négatif) :';questions.csv;31
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Hadoop permet de:';questions.csv;32
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Dans le paradigme MapReduce, les combiners servent à:';questions.csv;33
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Dans le paradigme MapReduce, les partitioners servent à:';questions.csv;34
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='L'utilisation de systèmes distrubués permet';questions.csv;35
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Hadoop streaming est un outil qui permet';questions.csv;36
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Dans le cas d'une architecture distribuée, le théorème CAP nous oblige à choisir entre:';questions.csv;37
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Hive est';questions.csv;38
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Pour Hive, partitioner consiste à';questions.csv;39
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Pig permet';questions.csv;40
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Sqoop est utilisé';questions.csv;41
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Data science is ...';questions.csv;42
+2025-09-18 21:09:30;GROUP_OK;count=2 correct=1 q='Its applications are ...';questions.csv;43
+2025-09-18 21:09:30;validation;What are the first things you want to do when you start a Data Science project ? -> MISSING_CORRECT';questions.csv;44
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Are every datasets worth a Data Science project ?';questions.csv;45
+2025-09-18 21:09:30;validation;When the dataset is all set and obtained, what do you need to do ? -> MISSING_CORRECT';questions.csv;46
+2025-09-18 21:09:30;validation;What are the best tools you can use when starting a project? -> MISSING_CORRECT';questions.csv;47
+2025-09-18 21:09:30;GROUP_OK;count=2 correct=1 q='When building a model, you have to';questions.csv;48
+2025-09-18 21:09:30;GROUP_OK;count=2 correct=1 q='Your model is all done and working, what's next?';questions.csv;49
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='What is Machine learning ?';questions.csv;50
+2025-09-18 21:09:30;validation;Supervised learning ... -> MISSING_CORRECT';questions.csv;51
+2025-09-18 21:09:30;validation;Unsupervised learning ... -> MISSING_CORRECT';questions.csv;52
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Classification';questions.csv;53
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Regression';questions.csv;54
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Overfitting is';questions.csv;55
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=2 q='A way to handle imbalanced datasets is';questions.csv;56
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Pourquoi utiliser des APIs?';questions.csv;57
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='En utilisant Flask, on permet à un utilisateur ou à une machine d'utiliser un service avec';questions.csv;58
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Pourquoi utiliser Docker?';questions.csv;59
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Si on fait un parallèle avec la programmation orientée objet, les images de containers Docker sont l'équivalent des';questions.csv;60
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Pour faciliter le passage de fichiers entre la machine hôte et un container Docker, on peut utiliser les';questions.csv;61
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Pour faciliter la communication entre la machine hôte et un container Docker, on peut utiliser les';questions.csv;62
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Quelle commande permet de lancer un container Docker ?';questions.csv;63
+2025-09-18 21:09:30;DUPLICATE_OPTION_IGNORED;answer='A répertorier les images publiques de containers';questions.csv;65
+2025-09-18 21:09:30;DUPLICATE_OPTION_MERGED;answer='A déployer plusieurs containers en même temps';questions.csv;65
+2025-09-18 21:09:30;DUPLICATE_OPTION_IGNORED;answer='A créer sa propre image Docker';questions.csv;65
+2025-09-18 21:09:30;DUPLICATE_OPTION_IGNORED;answer='Tous ces points';questions.csv;65
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=2 q='A quoi sert Docker-Compose ?';questions.csv;64
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Dans Airflow, le DAG répertorie';questions.csv;66
+2025-09-18 21:09:30;GROUP_OK;count=3 correct=1 q='Quelle est la différence entre le processing time et le event time ?';questions.csv;67
+2025-09-18 21:09:30;GROUP_OK;count=4 correct=1 q='Kafka est un système de messagerie';questions.csv;68
+2025-09-18 21:09:30;validation;Dans Kafka, les brokers permettent de -> MISSING_CORRECT';questions.csv;69
+2025-09-18 21:09:30;validation;Dans Kafka, dans un consumer group, les consommateurs accédent -> MISSING_CORRECT';questions.csv;70
+2025-09-18 21:09:30;validation;Quelle est la différence entre Hadoop et Spark? -> MISSING_CORRECT';questions.csv;71
+2025-09-18 21:09:30;validation;Quelle librairie de Spark n’existe pas ? -> MISSING_CORRECT';questions.csv;72
+2025-09-18 21:09:30;validation;Que signigie RDD ? -> MISSING_CORRECT';questions.csv;73
+2025-09-18 21:09:30;validation;Qu’est-ce que le DAG ? -> MISSING_CORRECT';questions.csv;74
+2025-09-18 21:09:30;validation;Les Dstreams sont définis par -> MISSING_CORRECT';questions.csv;75
+2025-09-18 21:09:30;validation;Dans HBase, les données sont stockées par -> MISSING_CORRECT';questions.csv;76
