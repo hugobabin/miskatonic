@@ -51,10 +51,10 @@ def log_etl(type_evenement, message, data_log=DATA_LOG,file=None,line=None):
     header = not log_file.exists()
     row = pd.DataFrame([{
         "timestamp": ts,
-        "type_evenement": type_evenement,
-        "message": message,
         "file": file,
-        "line": line
+        "line": line,
+        "type_evenement": type_evenement,
+        "message": message    
     }])
     row.to_csv(log_file, mode="a", index=False, header=header,sep=';')
 
@@ -95,7 +95,7 @@ def read_csv(data_in, data_treated, data_log):
 
         # 7. log and move processed file
         all_rows.append(df)
-        log_etl("read_ok", f"{len(df)} rows to process", data_log,file=file_name)
+        log_etl("READ_OK", f"{len(df)} rows to process", data_log,file=file_name)
         move_file(file_path, data_treated)
    
     return pd.concat(all_rows, ignore_index=True) if all_rows else pd.DataFrame()
@@ -174,9 +174,9 @@ def deduplicate_responses(question_df, src_name):
         if response_text in seen:
             if is_correct and not seen[response_text]["isCorrect"]:
                 seen[response_text]["isCorrect"] = True
-                log_etl("DUPLICATE_OPTION_MERGED", f"answer='{response_text}'",file=file_,line=line_)
+                log_etl("ANSWER_MERGED", f"answer='{response_text}'",file=file_,line=line_)
             else:
-                log_etl("DUPLICATE_OPTION_IGNORED", f"answer='{response_text}'",file=file_,line=line_)
+                log_etl("ANSWER_IGNORED", f"answer='{response_text}'",file=file_,line=line_)
         else:
             seen[response_text] = {"answer": response_text, "isCorrect": is_correct}
             responses.append(seen[response_text])
@@ -207,7 +207,7 @@ def build_question_object(question, subj, question_df, src_name, author):
     errors = validate_responses_rules(responses)
     if errors:
         line_hint = int(question_df["source_idx"].min()) if "source_idx" in question_df.columns else None
-        log_etl("validation", f"{question} -> {','.join(errors)}'",file=src_name,line=line_hint)
+        log_etl("QUESTION_REJECTED", f"{question} -> {','.join(errors)}'",file=src_name,line=line_hint)
         return None
 
     # 2) pick use/remark from first non-empty values (ordered by source_idx if present)
@@ -264,7 +264,7 @@ def export_questions_to_json(src_name,responses_df,author=None):
             continue
         questions_out.append(obj)
         line_hint = int(question_df["source_idx"].min()) if "source_idx" in question_df.columns else None
-        log_etl("GROUP_OK",
+        log_etl("QUESTION_OK",
                 f"count={len(obj['responses'])} correct="
                 f"{sum(('isCorrect' in r) for r in obj['responses'])} q='{question}'",file=src_name,line=line_hint)
 
@@ -301,9 +301,11 @@ def process_and_export_csv(csv_path, author = None):
     src_name = csv_path.name
     stats = export_questions_to_json(src_name, responses_df, author)
     stats["message"] = f"Questions accepted: {stats['accepted']} | rejected: {stats['rejected']} | total: {stats['total']}"
-
+    # log final result
+    log_etl("SUMMARY",file=src_name, message=stats["message"])
     return stats
 
+#-------------- main ------------------
 if __name__ == "__main__":
     files = list(Path("data/in").glob("*.csv"))
     if not files:
