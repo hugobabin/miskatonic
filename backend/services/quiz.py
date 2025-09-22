@@ -4,7 +4,7 @@ import random
 from datetime import datetime, timezone
 from typing import TypedDict
 
-from models.question import Question
+from models.question import QuestionModel
 from models.quiz import Quiz
 from services.mongo import ServiceMongo
 from services.question import ServiceQuestion
@@ -24,7 +24,7 @@ class ServiceQuiz:
         total_questions: int,
         subjects: list[str],
         use: str,
-    ) -> list[Question]:
+    ) -> list[QuestionModel]:
         """Generate a quiz with {total_questions} for said {subjects} and said {use}."""
         questions = ServiceQuestion.list_some(subjects=subjects, use=use)
         questions_sample = random.sample(questions, total_questions)

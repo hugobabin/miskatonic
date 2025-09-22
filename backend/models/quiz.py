@@ -1,16 +1,23 @@
-"""Quiz model based on TypedDict."""
+"""Quiz model based on BaseModel."""
 
-from typing import TypedDict
+from models.question import QuestionModel
+from pydantic import BaseModel
 
-from models.question import Question
 
-
-class Quiz(TypedDict):
+class Quiz(BaseModel):
     """Quiz."""
 
-    questions: list[Question]
+    questions: list[QuestionModel]
     subjects: list[str]
     use: str
     metadata: dict[str, str]
     date_creation: dict[str, str]
     date_modification: dict[str, str]
+
+
+class QuizGenerator(BaseModel):
+    """Quiz generator."""
+
+    total_questions: int
+    subjects: list[str]
+    use: str

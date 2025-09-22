@@ -4,9 +4,7 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
 from pymongo.errors import ConnectionFailure
-
-HOST = "mongodb"
-PORT = "27017"
+from services.util import ServiceUtil
 
 DATABASE_NAME = "miskatonic"
 
@@ -19,8 +17,12 @@ class ServiceMongo:
     @classmethod
     def connect(cls) -> None:
         """Create MongoClient."""
+        ServiceUtil.load_env()
+        username = ServiceUtil.get_env("MONGO_INITDB_ROOT_USERNAME")
+        password = ServiceUtil.get_env("MONGO_INITDB_ROOT_PASSWORD")
+        url = f"mongodb://{username}:{password}@mongo:27017"
         try:
-            cls.client = MongoClient(host=HOST, port=PORT, connect=True)
+            cls.client = MongoClient(url)
         except ConnectionFailure as e:
             raise RuntimeError from e
 
