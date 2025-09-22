@@ -23,6 +23,8 @@ services:
     depends_on:
       mongo:
         condition: service_started
+    networks:
+      - miskatonic
 
   miskatonic-backend:
     container_name: miskatonicback

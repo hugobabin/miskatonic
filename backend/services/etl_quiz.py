@@ -1,8 +1,10 @@
 import pandas as pd
 import shutil
 import json
+import re, unicodedata
 from pathlib import Path
 from datetime import datetime
+
 
 #----- Folders -----
 DATA_IN = Path("data/in")
@@ -31,6 +33,13 @@ MAPPING_CSV_TO_CIBLE = {
 def clean_col(col):
     """Normalize column names: lowercase, trim spaces, replace spaces with underscore."""
     return "_".join(str(col).strip().lower().split())
+
+def normalize_question(s):
+    if s is None:
+        return ""
+    s = unicodedata.normalize("NFKC", str(s)).strip()
+    # remove trailing punctuation like : ; ? . ! …
+    return re.sub(r"[ \t\u00A0]*[:;?.!…]+$", "", s)
 
 def move_file(src, dest_dir):
     """Move a file into destination folder, create folder if necessary."""
@@ -93,7 +102,10 @@ def read_csv(data_in, data_treated, data_log):
         df['source_idx']=df.index+1
         df["source_file"] = file_name
 
-        # 7. log and move processed file
+        # 7. normalize question text
+        df["question_key"] = df["question"].apply(normalize_question)
+      
+        # 8. log and move processed file
         all_rows.append(df)
         log_etl("READ_OK", f"{len(df)} rows to process", data_log,file=file_name)
         move_file(file_path, data_treated)
@@ -135,6 +147,7 @@ def expand_responses_with_flags(df):
                 continue
             records.append({
                 "question": row["question"],
+                "question_key": row["question_key"],
                 "subject": row["subject"],
                 "use": row.get("use", ""),
                 "remark":row.get("remark", ""),
@@ -230,8 +243,8 @@ def build_question_object(question, subj, question_df, src_name, author):
     ]
 
     # 4) dates + metadata
-    from datetime import date
-    today = date.today().isoformat()
+    from datetime import datetime,timezone
+    today = datetime.now(timezone.utc).isoformat()
     return {
         "question": question,
         "subject": subj,
@@ -248,7 +261,7 @@ def build_question_object(question, subj, question_df, src_name, author):
 
 def export_questions_to_json(src_name,responses_df,author=None):
     """
-    Process responses DataFrame grouped by (question, subject),
+    Process responses DataFrame grouped by (question_key subject),
     build question objects, write them as a JSON file,
     returns: dict:{"accepted": int, "rejected": int, "total": int, "json_path": str}
     """
@@ -257,7 +270,8 @@ def export_questions_to_json(src_name,responses_df,author=None):
     questions_out: list[dict] = []
     rejected = 0
 
-    for (question, subj), question_df in responses_df.groupby(["question","subject"], sort=False):
+    for (qkey, subj), question_df in responses_df.groupby(["question_key","subject"], sort=False):
+        question = question_df.loc[question_df["question"].str.len().idxmax(), "question"]
         obj = build_question_object(question, subj, question_df, src_name, author)
         if obj is None:
             rejected += 1
