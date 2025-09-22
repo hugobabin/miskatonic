@@ -42,3 +42,13 @@ uvicorn==0.35.0
 uvloop==0.21.0
 watchfiles==1.1.0
 websockets==15.0.1
+numpy==2.3.3
+pandas==2.3.2
+python-dateutil==2.9.0.post0
+pytz==2025.2
+requests==2.32.5
+setuptools==80.9.0
+six==1.17.0
+tzdata==2025.2
+charset-normalizer==3.4.3
+python-dotenv==1.1.1
