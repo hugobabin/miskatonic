@@ -342,8 +342,8 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "eeyj0z9gfcgzkf"
+        "type": "loki",
+        "uid": "deyxjt4qp2z9cc"
       },
       "fieldConfig": {
         "defaults": {},
@@ -370,15 +370,15 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "disableTextWrap": false,
+          "datasource": {
+            "type": "loki",
+            "uid": "deyxjt4qp2z9cc"
+          },
+          "direction": "backward",
           "editorMode": "builder",
-          "expr": "http_requests_created",
-          "fullMetaSearch": false,
-          "includeNullMetadata": true,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A",
-          "useBackend": false
+          "expr": "{job=\"backend\"}",
+          "queryType": "range",
+          "refId": "A"
         }
       ],
       "title": "Logs (EN COURS)",
@@ -400,5 +400,5 @@
   "timezone": "browser",
   "title": "MiskatonicBoard",
   "uid": "0bb198dd-1a98-4a42-a24a-733c53df52fd",
-  "version": 14
+  "version": 15
 }
