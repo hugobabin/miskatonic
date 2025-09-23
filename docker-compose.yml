@@ -8,7 +8,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./db/mongodb:/data/db
+      - ./bdd/mongodb:/data/db
     networks:
       - miskatonic
   mongo-express:
@@ -24,6 +24,7 @@ services:
     depends_on:
       mongo:
         condition: service_started
+
   miskatonic-backend:
     container_name: miskatonicback
     ports:
@@ -57,26 +58,43 @@ services:
         condition: service_started
 
   # Prometheus/Grafana config with cAdvisor and redis
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    ports:
+      - "8025:8025"   # UI Web
+      - "1025:1025"   # SMTP
+    networks: [miskatonic]
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana-oss:latest
     container_name: grafana
     restart: unless-stopped
     ports:
-     - '3000:3000'
+      - '3000:3000'
     volumes:
-      - ./grafana-storage:/var/lib/grafana
-      - ./grafana.ini:/etc/grafana/grafana.ini:ro
-    networks:
-      - miskatonic
+     - grafana_data:/var/lib/grafana
+    depends_on:
+      - mailpit
+    environment:
+    - GF_SECURITY_ADMIN_USER=admin
+    - GF_SECURITY_ADMIN_PASSWORD=admin123
+    - GF_AUTH_ANONYMOUS_ENABLED=false
+    - GF_SMTP_ENABLED=true
+    - GF_SMTP_HOST=mailpit:1025
+    - GF_SMTP_FROM_ADDRESS=alerts@miskatonic.local
+    - GF_SMTP_FROM_NAME=Grafana
+    - GF_SMTP_STARTTLS_POLICY=NoStartTLS
+    - GF_SMTP_SKIP_VERIFY=true
+    networks: [miskatonic]
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
     ports:
     - 9090:9090
+    volumes:
+    - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     command:
     - --config.file=/etc/prometheus/prometheus.yml
-    volumes:
-    - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
     depends_on:
     - cadvisor
     networks:
@@ -102,22 +120,27 @@ services:
     - 6379:6379
     networks:
       - miskatonic
-
   node_exporter:
-    image: quay.io/prometheus/node-exporter:latest
+    image: prom/node-exporter:latest
     container_name: node_exporter
-    command:
-      - '--path.rootfs=/host'
-      - '--collector.filesystem.ignored-mount-points=^/(run|var/lib/docker/.+)($|/)' 
-      - '--collector.filesystem.ignored-fs-types=tmpfs,devtmpfs'
-    network_mode: host
-    pid: host
-    ports:
-    - 9100:9100
     restart: unless-stopped
+    ports:
+      - "9100:9100"
+    networks: [miskatonic]
+  loki:
+    user: "0:0" 
+    image: grafana/loki:2.9.0
+    container_name: loki
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/monitoring/local-config.yaml
     volumes:
-      - '/:/host:ro'
-
+      - ./monitoring/local-config.yaml:/etc/monitoring/local-config.yaml
+      - ./monitoring/data:/loki
+    networks: [miskatonic]
+volumes:
+      grafana_data: {}
 networks:
   miskatonic:
     driver:

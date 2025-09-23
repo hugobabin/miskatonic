@@ -1,9 +1,13 @@
+# Fichiers sensibles
 .venv
 .env
 db/mongodb
+# Python cache
 **/__pycache__/*
 __pycache__/
 backend/__pycache__/main.cpython-312.pyc
 *.pyc
+# data
+bdd/
+monitoring/
 grafana-storage/
-data/log/
