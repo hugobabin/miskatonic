@@ -51,4 +51,3 @@ setuptools==80.9.0
 six==1.17.0
 tzdata==2025.2
 charset-normalizer==3.4.3
-python-dotenv==1.1.1
