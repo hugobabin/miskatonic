@@ -1,11 +1,14 @@
+import logging
 from contextlib import asynccontextmanager
+from typing import Any, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
-from models.question import QuestionModel, QuestionGetter
+from models.question import QuestionGetter, QuestionModel
 from models.quiz import QuizGenerator
 from prometheus_fastapi_instrumentator import Instrumentator
+from services.log import ServiceLog
 from services.mongo import ServiceMongo
 from services.question import ServiceQuestion
 from services.quiz import ServiceQuiz
@@ -15,8 +18,11 @@ from services.quiz import ServiceQuiz
 async def lifespan(app: FastAPI):  # noqa: ANN201, ARG001
     """Handle MongoDB connection along app's lifespan."""
     ServiceMongo.connect()
+    ServiceLog.setup()
+    ServiceLog.send("Backup started.")
     yield
     ServiceMongo.disconnect()
+    ServiceLog.send("Backup stopped.")
 
 
 app = FastAPI(lifespan=lifespan)
@@ -32,65 +38,91 @@ app.add_middleware(
 )
 
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception) -> ORJSONResponse:
+    """Handle all exceptions."""
+    ServiceLog.send(f"{request.url.path} -> 500")
+    return ORJSONResponse(
+        content={"detail": str(exc)},
+        status_code=500,
+    )
+
+
+def handle_request_success(
+    request: Request,
+    data: Any = None,  # noqa: ANN401
+    message: str | None = None,  # noqa: FA102
+    status_code: int = 201,
+) -> ORJSONResponse:
+    """Standardize successful responses with logging."""
+    ServiceLog.send(f"{request.url.path} -> {status_code}")
+    return ORJSONResponse(
+        content=data if data is not None else {"message": message},
+        status_code=status_code,
+    )
+
+
 @app.post("/quiz/generate")
-async def generate_quiz(params: QuizGenerator) -> None:
+async def generate_quiz(params: QuizGenerator, request: Request) -> None:
     """Generate a quiz."""
     ServiceQuiz.generate(
         total_questions=params.total_questions,
         subjects=params.subjects,
         use=params.use,
     )
+    return handle_request_success(
+        request=request,
+        message="Successfully generated a quiz.",
+    )
 
 
 @app.post("/question/create")
-async def create_question(question: QuestionModel) -> ORJSONResponse:
+async def create_question(question: QuestionModel, request: Request) -> ORJSONResponse:
     """Create question in MongoDB based on POST body."""
-    try:
-        ServiceQuestion.create(question=question)
-        return ORJSONResponse(
-            content={"message": "Question created successfully"},
-            status_code=201,
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e)) from e
+    ServiceQuestion.create(question=question)
+    return handle_request_success(
+        request=request,
+        message="Succesfully created question.",
+    )
 
 
 @app.post("/question/create_bulk")
-async def create_questions(questions: list[QuestionModel]) -> ORJSONResponse:
+async def create_questions(
+    questions: list[QuestionModel],
+    request: Request,
+) -> ORJSONResponse:
     """Create questions in MongoDB based on POST body."""
-    try:
-        ServiceQuestion.create_all(questions=questions)
-        return ORJSONResponse(
-            content={"message": "Questions created successfully"},
-            status_code=201,
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e)) from e
+    ServiceQuestion.create_all(questions=questions)
+    return handle_request_success(
+        request=request,
+        message="Successfully created questions.",
+    )
 
 
 @app.get("/question/get_all")
-async def get_all_questions() -> ORJSONResponse:
+async def get_all_questions(request: Request) -> ORJSONResponse:
     """Get all questions from MongoDB."""
-    try:
-        questions = ServiceQuestion.list_all()
-        questions = [question.model_dump() for question in questions]
-        return ORJSONResponse(
-            content=questions,
-            status_code=201,
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e)) from e
+    questions = ServiceQuestion.list_all()
+    questions = [question.model_dump() for question in questions]
+    return handle_request_success(request=request, data=questions)
 
 
 @app.post("/question/get_some")
-async def get_some_questions(params: QuestionGetter) -> ORJSONResponse:
+async def get_some_questions(
+    params: QuestionGetter,
+    request: Request,
+) -> ORJSONResponse:
     """Get some questions from MongoDB."""
-    try:
-        questions = ServiceQuestion.list_some(subjects=params.subjects, use=params.use)
-        questions = [question.model_dump() for question in questions]
-        return ORJSONResponse(
-            content=questions,
-            status_code=201,
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e)) from e
+    questions = ServiceQuestion.list_some(subjects=params.subjects, use=params.use)
+    questions = [question.model_dump() for question in questions]
+    return handle_request_success(request=request, data=questions)
+
+
+@app.post("/question/archive")
+async def archive_question(question_id: str, request: Request) -> ORJSONResponse:
+    """Archive a question in MongoDB."""
+    ServiceQuestion.archive(question_id=question_id)
+    return handle_request_success(
+        request=request,
+        message=f"Successfully archived question with id {question_id}",
+    )

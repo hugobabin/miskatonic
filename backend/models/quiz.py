@@ -1,11 +1,14 @@
 """Quiz model based on BaseModel."""
 
+from datetime import datetime
+from typing import TypedDict
+
 from models.question import QuestionModel
 from pydantic import BaseModel, ConfigDict, Field
 from services.util import ObjectIdValidator
 
 
-class Quiz(BaseModel):
+class QuizModel(BaseModel):
     """Quiz."""
 
     id: ObjectIdValidator = Field(alias="_id")
@@ -13,14 +16,30 @@ class Quiz(BaseModel):
     subjects: list[str]
     use: str
     metadata: dict[str, str]
-    date_creation: dict[str, str]
-    date_modification: dict[str, str]
+    date_creation: datetime
+    date_modification: datetime | None  # noqa: FA102
+    active: bool
+
+    model_config = ConfigDict(validate_by_name=True, validate_by_alias=True)
+
+
+class QuizDict(TypedDict):
+    """QuizDict."""
+
+    id: str | None  # noqa: FA102
+    questions: list[QuestionModel]
+    subjects: list[str]
+    use: str
+    metadata: dict[str, str]
+    date_creation: datetime
+    date_modification: datetime | None  # noqa: FA102
+    active: bool
 
     model_config = ConfigDict(validate_by_name=True, validate_by_alias=True)
 
 
 class QuizGenerator(BaseModel):
-    """Quiz generator."""
+    """QuizGenerator."""
 
     total_questions: int
     subjects: list[str]

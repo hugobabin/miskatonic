@@ -19,6 +19,9 @@ class QuestionModel(BaseModel):
     metadata: dict[str, str]
     date_creation: datetime
     date_modification: datetime | None  # noqa: FA102
+    active: bool = Field(default=True)
+
+    model_config = ConfigDict(validate_by_name=True, validate_by_alias=True)
 
     model_config = ConfigDict(validate_by_name=True, validate_by_alias=True)
 
@@ -35,6 +38,7 @@ class QuestionDict(TypedDict):
     metadata: dict[str, str]
     date_creation: datetime
     date_modification: datetime | None  # noqa: FA102
+    active: bool
 
 
 class QuestionGetter(BaseModel):
