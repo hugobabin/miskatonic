@@ -40,15 +40,23 @@ class ServiceQuestion:
         return [QuestionModel.model_validate(question) for question in found]
 
     @staticmethod
-    def edit(id: str, question: QuestionModel) -> None:
+    def edit(question_id: str, question: QuestionModel) -> None:
         """Edit an existing question in MongoDB."""
-        collection = ServiceMongo.get_collection("question")
-        query_filter = {"id_": id}
-        update_operation = {"set": question.model_dump()}
+        collection: Collection[QuestionDict] = ServiceMongo.get_collection("questions")
+        query_filter = {"_id": question_id}
+        update_operation = {"$set": question.model_dump()}
         collection.update_one(query_filter, update_operation, upsert=True)
 
     @staticmethod
-    def archive(id: int) -> None:
+    def archive(question_id: int) -> None:
         """Archive a question in MongoDB."""
-        collection = ServiceMongo.get_collection("question")
-        # complete here
+        collection: Collection[QuestionDict] = ServiceMongo.get_collection("questions")
+        query_filter = {"_id": question_id}
+        update_operation = {"$set": {"active": False}}
+        collection.update_one(query_filter, update_operation, upsert=True)
+
+    @staticmethod
+    def get_all_subjects() -> list[str]:
+        """Get all existing quiz subjects from MongoDB."""
+        questions = ServiceQuestion.list_all()
+        return [question.subject for question in questions]
