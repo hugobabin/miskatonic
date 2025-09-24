@@ -5,6 +5,7 @@ from passlib.hash import bcrypt
 
 ROOT = Path(__file__).resolve().parents[2]
 DB_PATH = ROOT / "bdd" / "quiz_users.sqlite"
+DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 ROLES = ["admin", "teacher", "student"]
 USERS = [
     ("admin",    "admin123", 1, ["admin"]),
@@ -41,7 +42,7 @@ CREATE TABLE IF NOT EXISTS user_role (
   UNIQUE (user_id, role_id)
 );
 
-CREATE TABLE IF NOT EXISTS auth_audit (
+CREATE TABLE IF NOT EXISTS auth_log (
   id           INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id      INTEGER NULL,
   username     TEXT    NULL,

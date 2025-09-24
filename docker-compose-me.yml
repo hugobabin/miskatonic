@@ -35,7 +35,6 @@ services:
     volumes:
       - ./backend:/usr/src/app
       - .env:/usr/src/app/.env
-      - ./promtail-logs:/var/log
     networks:
       - miskatonic
     depends_on:
