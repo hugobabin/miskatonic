@@ -11,14 +11,14 @@ from services.util import ObjectIdValidator
 class QuizModel(BaseModel):
     """Quiz."""
 
-    id: ObjectIdValidator = Field(alias="_id")
+    id: ObjectIdValidator | None = Field(alias="_id")  # noqa: FA102
     questions: list[QuestionModel]
     subjects: list[str]
     use: str
     metadata: dict[str, str]
     date_creation: datetime
     date_modification: datetime | None  # noqa: FA102
-    active: bool
+    active: bool = Field(default=True)
 
     model_config = ConfigDict(validate_by_name=True, validate_by_alias=True)
 
