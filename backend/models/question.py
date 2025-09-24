@@ -10,7 +10,7 @@ from services.util import ObjectIdValidator
 class QuestionModel(BaseModel):
     """Question."""
 
-    id: ObjectIdValidator = Field(alias="_id")
+    id: ObjectIdValidator | None = Field(alias="_id")  # noqa: FA102
     question: str
     subject: str
     use: str

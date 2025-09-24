@@ -34,7 +34,7 @@ class ServiceQuiz:
         collection: Collection[QuizDict] = ServiceMongo.get_collection("quizs")
         query_filter = {"_id": quiz_id}
         update_operation = {"$set": {"active": False}}
-        collection.update_one(query_filter, update_operation, upsert=True)
+        collection.update_one(query_filter, update_operation)
 
     @staticmethod
     def generate(
@@ -49,11 +49,12 @@ class ServiceQuiz:
             min(total_questions, len(questions)),
         )
         quiz = QuizModel(
+            id=None,
             questions=questions_sample,
             subjects=subjects,
             use=use,
             metadata={"test": "toast"},
-            date_creation={"$date": datetime.now(tz=timezone.utc)},
+            date_creation=datetime.now(tz=timezone.utc),
             date_modification=None,
             active=True,
         )

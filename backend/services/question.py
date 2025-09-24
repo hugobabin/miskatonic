@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING
 
+from bson import ObjectId
 from models.question import QuestionDict, QuestionModel
 from services.mongo import ServiceMongo
 
@@ -43,17 +44,21 @@ class ServiceQuestion:
     def edit(question_id: str, question: QuestionModel) -> None:
         """Edit an existing question in MongoDB."""
         collection: Collection[QuestionDict] = ServiceMongo.get_collection("questions")
+        question_id = ObjectId(question_id)
         query_filter = {"_id": question_id}
-        update_operation = {"$set": question.model_dump()}
+        dump = question.model_dump()
+        dump.pop("id")
+        update_operation = {"$set": dump}
         collection.update_one(query_filter, update_operation, upsert=True)
 
     @staticmethod
-    def archive(question_id: int) -> None:
+    def archive(question_id: str) -> None:
         """Archive a question in MongoDB."""
         collection: Collection[QuestionDict] = ServiceMongo.get_collection("questions")
+        question_id = ObjectId(question_id)
         query_filter = {"_id": question_id}
         update_operation = {"$set": {"active": False}}
-        collection.update_one(query_filter, update_operation, upsert=True)
+        collection.update_one(query_filter, update_operation)
 
     @staticmethod
     def get_all_subjects() -> list[str]:
