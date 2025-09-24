@@ -1,28 +1,34 @@
-# auth_api.py
 from pathlib import Path
 import sqlite3
 from datetime import datetime, timedelta, timezone
-from pydantic import BaseModel
 import jwt
-from fastapi import FastAPI, HTTPException, Request, status, Depends
+from fastapi import FastAPI, HTTPException, status, Depends, Body
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from passlib.hash import bcrypt
+import os
+from dotenv import load_dotenv
 
-# --- Config ---
-ROOT = Path(__file__).resolve().parents[2] 
+# ------ Config --------
+ROOT = Path(__file__).resolve().parents[2]
 DB_PATH = ROOT / "bdd" / "quiz_users.sqlite"
-SECRET = "change-me"                            # mets une vraie clé
+print("DB_PATH =", DB_PATH.resolve())
+load_dotenv()
+# Secret key used to sign and verify JWT tokens
+SECRET = os.getenv("SECRET_KEY")
+# Algorithm used to decode and verify JWT tokens
 ALGO = "HS256"
 ACCESS_MIN = 60
+# Reusable HTTPBearer instance to extract the token from requests
+bearer = HTTPBearer(auto_error=True)
 
-# --- Util DB ---
-def connect() :
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
-    conn.row_factory = sqlite3.Row
+# --- Connexion DB ---
+def connect()-> sqlite3.Connection:
+    conn = sqlite3.connect(DB_PATH)
     conn.execute("PRAGMA foreign_keys=ON;")
     return conn
 
-def get_user_by_username(username):
+# --- Util DB ---
+def get_user_by_username(username)-> tuple | None:
     with connect() as c:
         cur = c.execute("SELECT * FROM users WHERE username=?", (username,))
         return cur.fetchone()
@@ -39,7 +45,7 @@ def get_roles_for_user(uid):
     WHERE ur.user_id = ?
     """
     with connect() as c:
-        return {row["name"] for row in c.execute(sql, (uid,))}
+        return {row[0] for row in c.execute(sql, (uid,))}
 
 def insert_auth_log(user_id, username, action, route, status_code):
     with connect() as c:
@@ -47,8 +53,8 @@ def insert_auth_log(user_id, username, action, route, status_code):
                      VALUES (?,?,?,?,?)""", (user_id, username, action, route, status_code))
         c.commit()
 
-# --- Sécurité ---
-def create_token(sub, username = None, role = None):
+# --- JWT ---
+def create_token(sub, username=None, role=None):
     now = datetime.now(timezone.utc)
     payload = {
         "sub": sub,
@@ -64,7 +70,7 @@ def create_token(sub, username = None, role = None):
 def decode_token(token):
     return jwt.decode(token, SECRET, algorithms=[ALGO])
 
-bearer = HTTPBearer(auto_error=True)
+# --- Dépendances ---
 def get_current_user(cred: HTTPAuthorizationCredentials = Depends(bearer)):
     try:
         payload = decode_token(cred.credentials)
@@ -74,39 +80,51 @@ def get_current_user(cred: HTTPAuthorizationCredentials = Depends(bearer)):
     if sub is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     user = get_user_by_id(int(sub))
-    if not user or not user["is_active"]:
+    if not user or not user[3]:   # colonne is_active
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     return user
 
-def require_roles(*allowed):
-    def checker(user: sqlite3.Row = Depends(get_current_user)):
-        roles = get_roles_for_user(int(user["id"]))
-        if roles.isdisjoint(set(allowed)):
-            raise HTTPException(status_code=403)
-        return user
-    return checker
+def require_teacher(user = Depends(get_current_user)):
+    roles = get_roles_for_user(int(user[0]))
+    if "teacher" not in roles:
+        raise HTTPException(status_code=403)
+    return user
+
+def require_admin(user = Depends(get_current_user)):
+    roles = get_roles_for_user(int(user[0]))
+    if "admin" not in roles:
+        raise HTTPException(status_code=403)
+    return user
 
 # --- API ---
-
-class LoginIn(BaseModel):
-    username: str
-    password: str
-
-class TokenOut(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
-
 app = FastAPI(title="Quiz Auth API")
 
-@app.post("/auth/login", response_model=TokenOut, tags=["auth"])
-def login(payload: LoginIn, request: Request):
-    u = get_user_by_username(payload.username)
-    if not u or not bcrypt.verify(payload.password, u["password_hash"]):
-        insert_auth_log(u["id"] if u else None, payload.username, "failed_login", "/auth/login", 401)
+@app.post("/auth/login", tags=["auth"])
+def login(payload: dict = Body(...)):
+   # Check required fields in the request
+    username = payload.get("username")
+    password = payload.get("password")
+
+    if not username or not password:
+        raise HTTPException(status_code=400, detail="username et password requis")
+
+    # Look up the user in the database
+    user = get_user_by_username(username)
+
+    if not user or not bcrypt.verify(password, user[2]):  # user[2] = password_hash
+        insert_auth_log(user[0] if user else None, username, "failed_login", "/auth/login", 401)
         raise HTTPException(status_code=401, detail="invalid credentials")
-    if not u["is_active"]:
-        insert_auth_log(u["id"], u["username"], "login", "/auth/login", 401)
+
+    if not user[3]:  # user[3] = is_active
+        insert_auth_log(user[0], user[1], "login", "/auth/login", 401)
         raise HTTPException(status_code=401, detail="user inactive")
-    tok = create_token(sub=int(u["id"]))
-    insert_auth_log(u["id"], u["username"], "login", "/auth/login", 200)
-    return TokenOut(access_token=tok)
+
+    # Generate JWT token
+    tok = create_token(sub=int(user[0]), username=user[1])
+    insert_auth_log(user[0], user[1], "login", "/auth/login", 200)
+
+    # Return a basic response to the client
+    return {
+        "access_token": tok,
+        "token_type": "bearer"
+    }
