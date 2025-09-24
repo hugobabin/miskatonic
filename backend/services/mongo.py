@@ -4,7 +4,7 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
 from pymongo.errors import ConnectionFailure
-from services.util import ServiceUtil
+from backend.services.util import ServiceUtil
 
 DATABASE_NAME = "miskatonic"
 

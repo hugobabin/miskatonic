@@ -2,17 +2,17 @@ import logging
 from contextlib import asynccontextmanager
 from typing import Any, Optional
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
-from models.question import QuestionGetter, QuestionModel
-from models.quiz import QuizGenerator, QuizModel
+from backend.models.question import QuestionGetter, QuestionModel
+from backend.models.quiz import QuizGenerator, QuizModel
 from prometheus_fastapi_instrumentator import Instrumentator
-from services.log import ServiceLog
-from services.mongo import ServiceMongo
-from services.question import ServiceQuestion
-from services.quiz import ServiceQuiz
-
+from backend.services.log import ServiceLog
+from backend.services.mongo import ServiceMongo
+from backend.services.question import ServiceQuestion
+from backend.services.quiz import ServiceQuiz
+from backend.services.authentification import router as auth_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):  # noqa: ANN201, ARG001
@@ -156,3 +156,5 @@ async def edit_question(
         request=request,
         message=f"Successfully edited question with id {question_id}",
     )
+
+app.include_router(auth_router) 

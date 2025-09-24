@@ -1,8 +1,9 @@
+# backend/services/authentification.py
 from pathlib import Path
 import sqlite3
 from datetime import datetime, timedelta, timezone
 import jwt
-from fastapi import FastAPI, HTTPException, status, Depends, Body
+from fastapi import APIRouter, HTTPException, status, Depends, Body 
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from passlib.hash import bcrypt
 import os
@@ -11,7 +12,6 @@ from dotenv import load_dotenv
 # ------ Config --------
 ROOT = Path(__file__).resolve().parents[2]
 DB_PATH = ROOT / "bdd" / "quiz_users.sqlite"
-print("DB_PATH =", DB_PATH.resolve())
 load_dotenv()
 # Secret key used to sign and verify JWT tokens
 SECRET = os.getenv("SECRET_KEY")
@@ -20,6 +20,8 @@ ALGO = "HS256"
 ACCESS_MIN = 60
 # Reusable HTTPBearer instance to extract the token from requests
 bearer = HTTPBearer(auto_error=True)
+
+router = APIRouter(prefix="/auth", tags=["auth"]) 
 
 # --- Connexion DB ---
 def connect()-> sqlite3.Connection:
@@ -97,10 +99,9 @@ def require_admin(user = Depends(get_current_user)):
     return user
 
 # --- API ---
-app = FastAPI(title="Quiz Auth API")
 
-@app.post("/auth/login", tags=["auth"])
-def login(payload: dict = Body(...)):
+@router.post("/login")
+def login(payload: dict = Body(...)):  
    # Check required fields in the request
     username = payload.get("username")
     password = payload.get("password")

@@ -3,8 +3,8 @@
 from typing import TYPE_CHECKING
 
 from bson import ObjectId
-from models.question import QuestionDict, QuestionModel
-from services.mongo import ServiceMongo
+from backend.models.question import QuestionDict, QuestionModel
+from backend.services.mongo import ServiceMongo
 
 if TYPE_CHECKING:
     from pymongo.collection import Collection

@@ -1,125 +1,136 @@
+version: "3.9"
+
 services:
   mongo:
     container_name: mongodb
-    image: mongo
-    restart: always
+    image: mongo:6
+    restart: unless-stopped
     ports:
-      - 27017:27017
+      - "27017:27017"
     env_file:
       - .env
     volumes:
-      - ./bdd/mongodb:/data/db
-    networks:
-      - miskatonic
+      - ./bdd/mongodb:/data/db         # Mongo laissé dans le repo
+    networks: [miskatonic]
+
   mongo-express:
     container_name: mongoexpress
     image: mongo-express
-    restart: always
+    restart: unless-stopped
     ports:
-      - 8081:8081
+      - "8081:8081"
     env_file:
       - .env
-    networks:
-      - miskatonic
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/
+      ME_CONFIG_BASICAUTH: "false"
     depends_on:
       mongo:
         condition: service_started
+    networks: [miskatonic]
 
   miskatonic-backend:
     container_name: miskatonicback
-    ports:
-      - 8000:8000
     build:
       context: .
       dockerfile: Dockerfile.back
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      LOG_TARGET: stdout               # pour Loki/Promtail
     volumes:
       - ./backend:/usr/src/app
-      - .env:/usr/src/app/.env
-    networks:
-      - miskatonic
     depends_on:
       mongo:
         condition: service_started
+    networks: [miskatonic]
+
   miskatonic-frontend:
     container_name: miskatonicfront
-    ports:
-      - 8082:8082
     build:
       context: .
       dockerfile: Dockerfile.front
+    ports:
+      - "8082:8082"
     volumes:
-      - ./frontend:/usr/share/nginx/html/
-    networks:
-      - miskatonic
+      - ./frontend:/usr/share/nginx/html:ro
     depends_on:
       mongo:
         condition: service_started
       miskatonic-backend:
         condition: service_started
+    networks: [miskatonic]
 
-  # Prometheus/Grafana config with cAdvisor and redis
   mailpit:
     image: axllent/mailpit:latest
     container_name: mailpit
+    restart: unless-stopped
     ports:
-      - "8025:8025"   # UI Web
+      - "8025:8025"   # UI
       - "1025:1025"   # SMTP
     networks: [miskatonic]
+
   grafana:
     image: grafana/grafana-oss:latest
     container_name: grafana
     restart: unless-stopped
     ports:
-      - '3000:3000'
+      - "3000:3000"
     volumes:
-     - grafana_data:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin123
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_SMTP_ENABLED: "true"
+      GF_SMTP_HOST: mailpit:1025
+      GF_SMTP_FROM_ADDRESS: alerts@miskatonic.local
+      GF_SMTP_FROM_NAME: Grafana
+      GF_SMTP_STARTTLS_POLICY: NoStartTLS
+      GF_SMTP_SKIP_VERIFY: "true"
     depends_on:
       - mailpit
-    environment:
-    - GF_SECURITY_ADMIN_USER=admin
-    - GF_SECURITY_ADMIN_PASSWORD=admin123
-    - GF_AUTH_ANONYMOUS_ENABLED=false
-    - GF_SMTP_ENABLED=true
-    - GF_SMTP_HOST=mailpit:1025
-    - GF_SMTP_FROM_ADDRESS=alerts@miskatonic.local
-    - GF_SMTP_FROM_NAME=Grafana
-    - GF_SMTP_STARTTLS_POLICY=NoStartTLS
-    - GF_SMTP_SKIP_VERIFY=true
     networks: [miskatonic]
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
+    restart: unless-stopped
     ports:
-    - 9090:9090
+      - "9090:9090"
     volumes:
-    - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     command:
-    - --config.file=/etc/prometheus/prometheus.yml
+      - --config.file=/etc/prometheus/prometheus.yml
     depends_on:
-    - cadvisor
-    networks:
-      - miskatonic
+      - cadvisor
+    networks: [miskatonic]
+
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
+    restart: unless-stopped
     ports:
-    - 8080:8080
+      - "8080:8080"
     volumes:
-    - /:/rootfs:ro
-    - /var/run:/var/run:rw
-    - /sys:/sys:ro
-    # - /var/lib/docker/:/var/lib/docker:ro
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      # - /var/lib/docker/:/var/lib/docker:ro
     depends_on:
-    - redis
-    networks:
-      - miskatonic
+      - redis
+    networks: [miskatonic]
+
   redis:
     image: redis:latest
     container_name: redis
+    restart: unless-stopped
     ports:
-    - 6379:6379
-    networks:
-      - miskatonic
+      - "6379:6379"
+    networks: [miskatonic]
+
   node_exporter:
     image: prom/node-exporter:latest
     container_name: node_exporter
@@ -127,8 +138,9 @@ services:
     ports:
       - "9100:9100"
     networks: [miskatonic]
+
   loki:
-    user: "0:0" 
+    user: "0:0"
     image: grafana/loki:2.9.0
     container_name: loki
     restart: unless-stopped
@@ -136,12 +148,24 @@ services:
       - "3100:3100"
     command: -config.file=/etc/monitoring/local-config.yaml
     volumes:
-      - ./monitoring/local-config.yaml:/etc/monitoring/local-config.yaml
+      - ./monitoring/local-config.yaml:/etc/monitoring/local-config.yaml:ro
       - ./monitoring/data:/loki
     networks: [miskatonic]
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./monitoring/promtail-config.yml:/etc/promtail/config.yml:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    networks: [miskatonic]
+
 volumes:
-      grafana_data: {}
+  grafana_data: {}
+
 networks:
-  miskatonic:
-    driver:
-      bridge
+  miskatonic: {}

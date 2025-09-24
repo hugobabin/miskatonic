@@ -4,9 +4,9 @@ import random
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
-from models.quiz import QuizDict, QuizModel
-from services.mongo import ServiceMongo
-from services.question import ServiceQuestion
+from backend.models.quiz import QuizDict, QuizModel
+from backend.services.mongo import ServiceMongo
+from backend.services.question import ServiceQuestion
 
 if TYPE_CHECKING:
     from pymongo.collection import Collection
