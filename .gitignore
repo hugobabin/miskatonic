@@ -1,7 +1,6 @@
 # Fichiers sensibles
 .venv
 .env
-db/mongodb
 # Python cache
 **/__pycache__/*
 __pycache__/
@@ -12,5 +11,7 @@ data/log/
 promtail-logs/
 # data
 bdd/
+db/
+data/
 monitoring/
 grafana-storage/

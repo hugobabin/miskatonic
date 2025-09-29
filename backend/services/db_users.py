@@ -4,13 +4,13 @@ from pathlib import Path
 from passlib.hash import bcrypt
 
 ROOT = Path(__file__).resolve().parents[2]
-DB_PATH = ROOT / "bdd" / "quiz_users.sqlite"
+DB_PATH = ROOT / "db" / "quiz_users.sqlite"
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 ROLES = ["admin", "teacher", "student"]
 USERS = [
-    ("admin",    "admin123", 1, ["admin"]),
+    ("admin", "admin123", 1, ["admin"]),
     ("teacher1", "teach123", 1, ["teacher"]),
-    ("student1", "stud123",  1, ["student"]),
+    ("student1", "stud123", 1, ["student"]),
     ("teacher2", "teach123", 0, ["teacher"]),  # inactif
 ]
 
@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS auth_log (
 );
 """
 
+
 def seed(conn):
     cur = conn.cursor()
     # Roles
@@ -82,11 +83,13 @@ def seed(conn):
             )
     conn.commit()
 
+
 def main():
     with sqlite3.connect(DB_PATH) as conn:
         conn.executescript(DDL)
         seed(conn)
     print(f"Base créée: {DB_PATH.resolve()}")
+
 
 if __name__ == "__main__":
     main()
