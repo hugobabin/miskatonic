@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 from models.question import QuestionGetter, QuestionModel
-from models.quiz import QuizGenerator
+from models.quiz import QuizGenerator, QuizModel
 from prometheus_fastapi_instrumentator import Instrumentator
 from services.log import ServiceLog
 from services.mongo import ServiceMongo
@@ -76,6 +76,24 @@ async def generate_quiz(params: QuizGenerator, request: Request) -> None:
     )
 
 
+@app.get("/quiz/get_all")
+async def get_all_quizs(request: Request) -> ORJSONResponse:
+    """Get all quizs from MongoDB."""
+    quizs = ServiceQuiz.list_all()
+    quizs = [quiz.model_dump() for quiz in quizs]
+    return handle_request_success(request=request, data=quizs)
+
+
+@app.post("/quiz/archive")
+async def archive_quiz(quiz_id: str, request: Request) -> ORJSONResponse:
+    """Archive a quiz in MongoDB."""
+    ServiceQuiz.archive(quiz_id=quiz_id)
+    return handle_request_success(
+        request=request,
+        message=f"Successfully archived quiz with id {quiz_id}",
+    )
+
+
 @app.post("/question/create")
 async def create_question(question: QuestionModel, request: Request) -> ORJSONResponse:
     """Create question in MongoDB based on POST body."""
@@ -125,4 +143,16 @@ async def archive_question(question_id: str, request: Request) -> ORJSONResponse
     return handle_request_success(
         request=request,
         message=f"Successfully archived question with id {question_id}",
+    )
+
+
+@app.post("/question/edit")
+async def edit_question(
+    question_id: str, question: QuestionModel, request: Request
+) -> ORJSONResponse:
+    """Edit a question in MongoDB."""
+    ServiceQuestion.edit(question_id=question_id, question=question)
+    return handle_request_success(
+        request=request,
+        message=f"Successfully edited question with id {question_id}",
     )
