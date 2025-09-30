@@ -1,6 +1,7 @@
 """Service for handling logs."""
 
 import logging
+import traceback
 from pathlib import Path
 
 
@@ -22,8 +23,14 @@ class ServiceLog:
         )
 
     @staticmethod
-    def send(message: str) -> None:
-        """Log a message."""
+    def send_info(message: str) -> None:
+        """Log an info."""
         logger = logging.getLogger(__name__)
-        logger.propagate = False
         logger.info(message)
+
+    @staticmethod
+    def send_exception(message: str, exc: Exception) -> None:
+        """Log an exception."""
+        logger = logging.getLogger(__name__)
+        tb = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))
+        logger.error(f"{message}\n{tb}")
