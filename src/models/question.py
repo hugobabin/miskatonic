@@ -14,7 +14,7 @@ class QuestionModel(BaseModel):
     question: str
     subject: str
     use: str
-    responses: list[dict[str, str]]
+    responses: list[dict[str, str | bool]]  # noqa: FA102
     remark: str
     metadata: dict[str, str]
     date_creation: datetime
@@ -31,7 +31,7 @@ class QuestionDict(TypedDict):
     question: str
     subject: str
     use: str
-    responses: list[dict[str, str]]
+    responses: list[dict[str, str | bool]]  # noqa: FA102
     remark: str
     metadata: dict[str, str]
     date_creation: datetime
