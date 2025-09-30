@@ -20,7 +20,7 @@ class ServiceMongo:
         ServiceUtil.load_env()
         username = ServiceUtil.get_env("MONGO_INITDB_ROOT_USERNAME")
         password = ServiceUtil.get_env("MONGO_INITDB_ROOT_PASSWORD")
-        url = f"mongodb://{username}:{password}@mongo:27017"
+        url = f"mongodb://{username}:{password}@0.0.0.0:27017"
         try:
             cls.client = MongoClient(url)
         except ConnectionFailure as e:

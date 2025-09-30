@@ -2,20 +2,24 @@
 
 from datetime import datetime
 from typing import TypedDict
+from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 from backend.services.util import ObjectIdValidator
 
+class ResponseModel(BaseModel):
+    answer: str
+    isCorrect: Optional[bool] = None
 
 class QuestionModel(BaseModel):
     """Question."""
 
-    id: ObjectIdValidator | None = Field(alias="_id")  # noqa: FA102
+    id: ObjectIdValidator = Field(default=None, alias="_id")  # ← défaut None
     question: str
     subject: str
     use: str
-    responses: list[dict[str, str]]
-    remark: str
+    responses: list[ResponseModel]
+    remark: Optional[str] = None 
     metadata: dict[str, str]
     date_creation: datetime
     date_modification: datetime | None  # noqa: FA102
@@ -31,9 +35,9 @@ class QuestionDict(TypedDict):
     question: str
     subject: str
     use: str
-    responses: list[dict[str, str]]
+    responses: list[dict[str, str|bool]]
     remark: str
-    metadata: dict[str, str]
+    metadata: list[dict[str, str]]
     date_creation: datetime
     date_modification: datetime | None  # noqa: FA102
     active: bool

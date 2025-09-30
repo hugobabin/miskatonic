@@ -1,10 +1,12 @@
 FROM python:3.12
 
-WORKDIR /usr/src/app
-
-COPY .env .
-COPY ./backend .
-
+WORKDIR /usr/src
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD [ "fastapi", "dev", "main.py", "--host", "0.0.0.0", "--port", "8000" ]
+# copie tout le repo pour garder backend/ et app/ si présent
+COPY . .
+
+ENV PYTHONPATH=/usr/src
+
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

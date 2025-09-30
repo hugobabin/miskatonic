@@ -25,6 +25,7 @@ services:
       mongo:
         condition: service_started
 
+  
   miskatonic-backend:
     container_name: miskatonicback
     ports:
@@ -33,8 +34,8 @@ services:
       context: .
       dockerfile: Dockerfile.back
     volumes:
-      - ./backend:/usr/src/app
-      - .env:/usr/src/app/.env
+      - ./:/usr/src
+      - .env:/usr/src/.env
       - ./promtail-logs:/var/log
     networks:
       - miskatonic

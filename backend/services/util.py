@@ -1,6 +1,7 @@
 """Service for handling useful functions and decorators."""
 
 import os
+import re, unicodedata
 from typing import Annotated, Any
 
 from dotenv import load_dotenv
@@ -20,6 +21,13 @@ class ServiceUtil:
         """Get environment {var} or {default} value."""
         return os.getenv(var, default)
 
+    @staticmethod
+    def normalize_question(s):
+        if s is None:
+            return ""
+        s = unicodedata.normalize("NFKC", str(s)).strip()
+        # remove trailing punctuation like : ; ? . ! …
+        return re.sub(r"[ \t\u00A0]*[:;?.!…]+$", "", s)
 
 def ensure_str(value: Any) -> Any:  # noqa: ANN401
     """Validate string values."""

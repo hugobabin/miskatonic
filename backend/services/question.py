@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from bson import ObjectId
 from backend.models.question import QuestionDict, QuestionModel
 from backend.services.mongo import ServiceMongo
+from backend.services.util import ServiceUtil
 
 if TYPE_CHECKING:
     from pymongo.collection import Collection
@@ -65,3 +66,24 @@ class ServiceQuestion:
         """Get all existing quiz subjects from MongoDB."""
         questions = ServiceQuestion.list_all()
         return [question.subject for question in questions]
+
+    @staticmethod
+    def exists(question: str, subject: str, use: str) -> bool:
+        """
+        Cherche un doc avec même (subject, use) dont la question normalisée
+        == question normalisée passée en entrée.
+        """
+        q_norm = ServiceUtil.normalize_question(question)
+        col = ServiceMongo.get_collection("questions")
+
+        cursor = col.find(
+            {"subject": subject, "use": use},
+            {"_id": 1, "question": 1},
+        )
+
+        for doc in cursor:
+            if ServiceUtil.normalize_question(doc.get("question", "")) == q_norm:
+                return True
+        return False
+    
+    
