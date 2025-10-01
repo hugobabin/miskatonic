@@ -13,6 +13,7 @@ from backend.services.mongo import ServiceMongo
 from backend.services.question import ServiceQuestion
 from backend.services.quiz import ServiceQuiz
 from backend.services.authentification import router as auth_router
+from backend.routers import etl as etl_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):  # noqa: ANN201, ARG001
@@ -157,4 +158,12 @@ async def edit_question(
         message=f"Successfully edited question with id {question_id}",
     )
 
+
+@app.get("/")
+async def root():
+    return {"message": "Bienvenue sur l'API Miskatonic"}
+
+
 app.include_router(auth_router) 
+
+app.include_router(etl_router.router)

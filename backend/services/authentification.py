@@ -72,7 +72,7 @@ def create_token(sub, username=None, role=None):
 def decode_token(token):
     return jwt.decode(token, SECRET, algorithms=[ALGO])
 
-# --- Dépendances ---
+# --- Dependencies ---
 def get_current_user(cred: HTTPAuthorizationCredentials = Depends(bearer)):
     try:
         payload = decode_token(cred.credentials)

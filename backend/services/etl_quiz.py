@@ -6,6 +6,8 @@ from backend.services.mongo import ServiceMongo
 from backend.services.question import ServiceQuestion
 from backend.models.question import QuestionModel
 from backend.services.util import ServiceUtil
+from rapidfuzz import fuzz
+from backend.services.mongo import ServiceMongo
 
 #----- Folders -----
 DATA_IN      = Path("data/in")
@@ -28,6 +30,8 @@ MAPPING_CSV_TO_CIBLE = {
     "remarque": "remark"
 }
 
+THRESHOLD_FUZZY = 90 # for typo detection
+
 #----- Utilities -----
 
 def clean_col(col):
@@ -48,8 +52,8 @@ def rapport_etl(type_evenement, message, data_log=DATA_LOG,file="log",line=None)
     """Append ETL events to a daily log CSV in data/log."""
     now       = datetime.now()
     ts        = now.strftime("%Y-%m-%d %H:%M:%S")
-    date_str  = now.strftime("%Y-%m-%d")
-    log_file  = data_log / f"rapport_{file}_{date_str}.csv"
+    file_name = Path(file).stem
+    log_file  = data_log / f"rapport_{file_name}.csv"
     header = not log_file.exists()
     row = pd.DataFrame([{
         "timestamp": ts,
@@ -59,6 +63,10 @@ def rapport_etl(type_evenement, message, data_log=DATA_LOG,file="log",line=None)
         "message": message    
     }])
     row.to_csv(log_file, mode="a", index=False, header=header,sep=';')
+
+def distinct_from_mongo(col, field: str) -> list[str]:
+    """Retourne la liste des valeurs distinctes pour un champ donné en base Mongo."""
+    return [v for v in col.distinct(field) if isinstance(v, str) and v.strip()]
 
 # ------------------ Read + mapping + checks ------------------
 def read_csv(data_in, data_treated, data_log):
@@ -105,8 +113,64 @@ def read_csv(data_in, data_treated, data_log):
         move_file(file_path, data_treated)
    
     return pd.concat(all_rows, ignore_index=True) if all_rows else pd.DataFrame()
+
+def fuzzy_value(val: str, ref: list[str], _field: str, threshold: int = THRESHOLD_FUZZY) -> str:
+    """Retourne la valeur corrigée si proche d’une valeur existante, sinon garde telle quelle."""
+    if not ref:
+        ref.append(val)
+        return val
+    best = max(ref, key=lambda c: fuzz.ratio(val, c))
+    score = fuzz.ratio(val, best)
+    if score > threshold and best != val:
+        return best
+    ref.append(val)   # new value becomes reference
+    return val
     
 # ------------------ Transform ------------------
+
+def transform_fuzzy(df: pd.DataFrame, log_fn):
+    # collection retrieval in Mongo
+    col = ServiceMongo.get_collection("questions")
+
+    subjects_ref = distinct_from_mongo(col, "subject")
+    uses_ref     = distinct_from_mongo(col, "use")
+
+    df["subject_input"] = df["subject"].fillna("").astype(str).str.strip()
+    df["use_input"]     = df["use"].fillna("").astype(str).str.strip()
+
+    
+    # loop for logging with line
+    for i, row in df.iterrows():
+        s_in, u_in = row["subject_input"], row["use_input"]
+
+        s_out = fuzzy_value(s_in, subjects_ref, "subject")
+        if s_out != s_in:
+            sc = fuzz.ratio(s_in, s_out)
+            if sc > THRESHOLD_FUZZY:
+                log_fn(
+                    "AUTO_CORRECT_SUBJECT",
+                    f"line={int(row['source_idx'])} field=subject from='{s_in}' to='{s_out}' "
+                    f"score={sc:.1f}, file='{row['source_file']}'",
+                    file=row["source_file"],
+                    line=int(row["source_idx"]),
+                )
+        df.at[i, "subject"] = s_out
+
+        u_out = fuzzy_value(u_in, uses_ref, "use")
+        if u_out != u_in:
+            sc = fuzz.ratio(u_in, u_out)
+            if sc > THRESHOLD_FUZZY:
+                log_fn(
+                    "AUTO_CORRECT_USE",
+                    f"line={int(row['source_idx'])} field=use from='{u_in}' to='{u_out}' "
+                    f"score={sc:.1f}, file='{row['source_file']}'",
+                    file=row["source_file"],
+                    line=int(row["source_idx"]),
+                )
+        df.at[i, "use"] = u_out
+
+    return df
+
 
 def extract_correct_indices(correct_answers):
     """
@@ -143,7 +207,7 @@ def expand_responses_with_flags(df):
                 continue
             records.append({
                 "question": row["question"],
-                "question_key": row["question_key"],     # (pour groupby)
+                "question_key": row["question_key"],     # (for groupby)
                 "subject": row["subject"],
                 "use": row.get("use", ""),
                 "remark":row.get("remark", ""),
@@ -261,7 +325,7 @@ def export_questions_to_mongo(src_name, responses_df, author=None):
     accepted = rejected = 0
 
     for (qkey, subj, use), question_df in responses_df.groupby(["question_key","subject","use"], sort=False):
-        # choisir l’énoncé le plus long
+        # choose the longest statement
         question = question_df.loc[question_df["question"].str.len().idxmax(), "question"]
 
         obj = build_question_object(question, subj, question_df, src_name, author, use=use)
@@ -271,7 +335,7 @@ def export_questions_to_mongo(src_name, responses_df, author=None):
 
         qm = QuestionModel(**obj)
 
-        # Vérif applicative: pas d’index, on compare question normalisée côté service
+        # Application-level check: no index, we compare the normalized question on the service side.
         if ServiceQuestion.exists(qm.question, qm.subject, qm.use):
             rejected += 1
             rapport_etl("DUP_SKIPPED", f"q='{qm.question}'", file=src_name,
@@ -305,11 +369,13 @@ def process_and_export_csv(csv_path, author = None):
         df_all = read_csv(DATA_IN, DATA_TREATED, DATA_LOG)
         if df_all.empty:
             raise ValueError("No valid data from uploaded CSV")
+        # Step 2: Fuzzy transform
+        df = transform_fuzzy(df_all,rapport_etl)
 
-        # Step 2: Expand responses to long format
-        responses_df = expand_responses_with_flags(df_all)
+        # Step 3: Expand responses to long format
+        responses_df = expand_responses_with_flags(df)
 
-        # Step 3: Export to Mongo
+        # Step 4: Export to Mongo
         src_name = csv_path.name
         stats = export_questions_to_mongo(src_name, responses_df, author)
         return stats

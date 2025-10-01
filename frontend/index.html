@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>BeBaQuiz</title>
-    <link rel="stylesheet" href="static/main.css">
-    <script src="static/main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <meta charset="utf-8">
+  <title>Upload Quiz CSV</title>
 </head>
+<body>
+  <h1>Import CSV pour l'ETL</h1>
+  <form id="uploadForm">
+    <input type="file" id="fileInput" name="file" accept=".csv" required />
+    <button type="submit">Envoyer</button>
+  </form>
+  <pre id="result"></pre>
 
-<body class="has-background-dark">
-    <div class="hero is-primary">
-        <nav class="navbar is-spaced">
-            <div class="navbar-item is-size-3 has-text-weight-bold">BeBaQuiz!!</div>
-            <div class=""></div>
-        </nav>
-    </div>
-    <section class="section has-background-dark">
-        <button class="button is-primary" id="btn-create-question">Create Question</button>
-        <div id="random-number">Click the button before me to create a dummy question in MongoDB.</div>
-    </section>
-    <section class="section has-background-primary">
-        <object data="http://localhost:3000/d/0bb198dd-1a98-4a42-a24a-733c53df52fd/cadvisor?orgId=1&from=now-6h&to=now&timezone=browser&refresh=5s" width="800" height="800"></object>
-    </section>
+  <script>
+    const form = document.getElementById('uploadForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const file = document.getElementById('fileInput').files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const token = "COLLE_TON_TOKEN_ICI"; // ou à récupérer via /auth/login
+
+      const res = await fetch("http://127.0.0.1:8000/etl/import", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
+        body: formData
+      });
+      const data = await res.json();
+      document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+    });
+  </script>
 </body>
-
 </html>
