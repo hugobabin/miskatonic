@@ -3,10 +3,11 @@ from contextlib import asynccontextmanager
 import arel
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, ORJSONResponse
+from fastapi.responses import HTMLResponse, ORJSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from prometheus_fastapi_instrumentator import Instrumentator
 
+from routers.login import get_login
 from routers.login import router as login_router
 from routers.question import router as questions_router
 from routers.quiz import router as quizs_router
@@ -51,6 +52,18 @@ if _debug := ServiceUtil.get_env("DEBUG"):
     app.add_event_handler("shutdown", hot_reload.shutdown)
     get_templates().env.globals["DEBUG"] = _debug
     get_templates().env.globals["hot_reload"] = hot_reload
+
+
+@app.middleware("http")
+async def check_auth(request: Request, call_next):
+    """Protect routes behind authentification middleware."""
+    if request.url.path.startswith("/login") or request.url.path.startswith("/static"):
+        return await call_next(request)
+    # if not logged on
+    if True:
+        return await get_login(request)
+    # if logged
+    return await call_next(request)
 
 
 @app.exception_handler(Exception)

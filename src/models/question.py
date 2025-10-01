@@ -18,7 +18,7 @@ class ResponseModel(BaseModel):
 class QuestionModel(BaseModel):
     """Question."""
 
-    id: ObjectIdValidator = Field(default=None, alias="_id")  # ← défaut None
+    id: ObjectIdValidator | None = Field(alias="_id")  # noqa: FA102
     question: str
     subject: str
     use: str
