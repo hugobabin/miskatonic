@@ -1,16 +1,16 @@
 import pandas as pd
 import shutil
+import json
+import re, unicodedata
 from pathlib import Path
-from datetime import datetime, timezone
-from backend.services.mongo import ServiceMongo
-from backend.services.question import ServiceQuestion
-from backend.models.question import QuestionModel
-from backend.services.util import ServiceUtil
+from datetime import datetime
+
 
 # ----- Folders -----
 DATA_IN = Path("data/in")
 DATA_TREATED = Path("data/treated")
 DATA_LOG = Path("data/log")
+DATA_JSON = Path("data/json")
 
 # ----- Expected schema -----
 EXPECTED_COLUMNS = {
@@ -46,6 +46,14 @@ def clean_col(col):
     return "_".join(str(col).strip().lower().split())
 
 
+def normalize_question(s):
+    if s is None:
+        return ""
+    s = unicodedata.normalize("NFKC", str(s)).strip()
+    # remove trailing punctuation like : ; ? . ! …
+    return re.sub(r"[ \t\u00A0]*[:;?.!…]+$", "", s)
+
+
 def move_file(src, dest_dir):
     """Move a file into destination folder, create folder if necessary."""
     shutil.move(src, dest_dir / src.name)
@@ -58,12 +66,12 @@ def get_csv_files(folder):
     return sorted(folder.glob("*.csv"))
 
 
-def rapport_etl(type_evenement, message, data_log=DATA_LOG, file="log", line=None):
+def log_etl(type_evenement, message, data_log=DATA_LOG, file=None, line=None):
     """Append ETL events to a daily log CSV in data/log."""
     now = datetime.now()
     ts = now.strftime("%Y-%m-%d %H:%M:%S")
     date_str = now.strftime("%Y-%m-%d")
-    log_file = data_log / f"rapport_{file}_{date_str}.csv"
+    log_file = data_log / f"log_etl_{date_str}.csv"
     header = not log_file.exists()
     row = pd.DataFrame(
         [
@@ -90,7 +98,7 @@ def read_csv(data_in, data_treated, data_log):
         try:
             df = pd.read_csv(file_path)
         except Exception as e:
-            rapport_etl("read_csv", str(e), data_log, file=file_name)
+            log_etl("read_csv", str(e), data_log, file_name)
             move_file(file_path, data_treated)
             continue
 
@@ -103,7 +111,7 @@ def read_csv(data_in, data_treated, data_log):
         # 4. check expected columns
         missing = EXPECTED_COLUMNS - set(df.columns)
         if missing:
-            rapport_etl(
+            log_etl(
                 "structure",
                 f"Missing columns: {sorted(missing)}",
                 data_log,
@@ -111,7 +119,6 @@ def read_csv(data_in, data_treated, data_log):
             )
             move_file(file_path, data_treated)
             continue
-
         # 5. clean content (NaN -> "", strip strings)
         obj_cols = df.select_dtypes(include="object").columns
         df[obj_cols] = df[obj_cols].fillna("").apply(lambda s: s.str.strip())
@@ -121,11 +128,11 @@ def read_csv(data_in, data_treated, data_log):
         df["source_file"] = file_name
 
         # 7. normalize question text
-        df["question_key"] = df["question"].apply(ServiceUtil.normalize_question)
+        df["question_key"] = df["question"].apply(normalize_question)
 
         # 8. log and move processed file
         all_rows.append(df)
-        rapport_etl("READ_OK", f"{len(df)} rows to process", data_log, file=file_name)
+        log_etl("READ_OK", f"{len(df)} rows to process", data_log, file=file_name)
         move_file(file_path, data_treated)
 
     return pd.concat(all_rows, ignore_index=True) if all_rows else pd.DataFrame()
@@ -168,17 +175,15 @@ def expand_responses_with_flags(df):
             answers = row[choice_col]
             if not answers:
                 if i in correct_indices:
-                    rapport_etl(
+                    log_etl(
                         "CORRECT_MISSING_CHOICE",
-                        f"line={int(row['source_idx'])} col={choice_col}, file='{row['source_file']}'",
-                        file=row["source_file"],
-                        line=int(row["source_idx"]),
+                        f"line={int(row['source_idx'])} col={choice_col}, file='{row['source_file']}',line={int(row['source_idx'])}",
                     )
                 continue
             records.append(
                 {
                     "question": row["question"],
-                    "question_key": row["question_key"],  # (pour groupby)
+                    "question_key": row["question_key"],
                     "subject": row["subject"],
                     "use": row.get("use", ""),
                     "remark": row.get("remark", ""),
@@ -220,11 +225,11 @@ def deduplicate_responses(question_df, src_name):
         if response_text in seen:
             if is_correct and not seen[response_text]["isCorrect"]:
                 seen[response_text]["isCorrect"] = True
-                rapport_etl(
+                log_etl(
                     "ANSWER_MERGED", f"answer='{response_text}'", file=file_, line=line_
                 )
             else:
-                rapport_etl(
+                log_etl(
                     "ANSWER_IGNORED",
                     f"answer='{response_text}'",
                     file=file_,
@@ -249,12 +254,12 @@ def validate_responses_rules(responses):
     return errors
 
 
-def build_question_object(question, subj, question_df, src_name, author, use):
+def build_question_object(question, subj, question_df, src_name, author):
     """
-    Build one question dict (compatible QuestionModel) from a (question_key, subject, use) group.
+    Build one question JSON object from a (question, subject) group.
     - Deduplicate responses
     - Validate business rules (>=2 responses, >=1 correct)
-    - Keep 'remark' from the first non-empty row
+    - Keep 'use' and 'remark' from the first non-empty row
     - Omit isCorrect when False
     """
     # 1) deduplicate + validate
@@ -266,15 +271,15 @@ def build_question_object(question, subj, question_df, src_name, author, use):
             if "source_idx" in question_df.columns
             else None
         )
-        rapport_etl(
+        log_etl(
             "QUESTION_REJECTED",
-            f"{question} -> {','.join(errors)}",
+            f"{question} -> {','.join(errors)}'",
             file=src_name,
             line=line_hint,
         )
         return None
 
-    # 2) pick remark
+    # 2) pick use/remark from first non-empty values (ordered by source_idx if present)
     grp_sorted = (
         question_df.sort_values("source_idx")
         if "source_idx" in question_df.columns
@@ -289,6 +294,7 @@ def build_question_object(question, subj, question_df, src_name, author, use):
                 return v
         return None
 
+    use_val = first_non_empty("use")
     remark_val = first_non_empty("remark")
 
     # 3) shape responses (omit isCorrect when False)
@@ -302,95 +308,95 @@ def build_question_object(question, subj, question_df, src_name, author, use):
     ]
 
     # 4) dates + metadata
-    now = datetime.now(timezone.utc)
+    from datetime import datetime, timezone
+
+    today = datetime.now(timezone.utc).isoformat()
     return {
         "question": question,
         "subject": subj,
-        "use": use,
+        "use": use_val,
         "responses": shaped_responses,
-        "remark": remark_val or None,
-        "metadata": {"source_file": src_name, "author": author or ""},
-        "date_creation": now,
-        "date_modification": None,
-        "active": True,
+        "remark": remark_val,
+        "metadata": {"source_file": src_name, "author": author},
+        "date_creation": {"$date": today},
+        "date_modification": {"$date": today},
     }
 
 
-def export_questions_to_mongo(src_name, responses_df, author=None):
+def export_questions_to_json(src_name, responses_df, author=None):
     """
-    GroupBy (question_key, subject, use) → build → exists() → create().
+    Process responses DataFrame grouped by (question_key subject),
+    build question objects, write them as a JSON file,
+    returns: dict:{"accepted": int, "rejected": int, "total": int, "json_path": str}
     """
-    accepted = rejected = 0
+    out_path = DATA_JSON / (Path(src_name).stem + ".json")
 
-    for (qkey, subj, use), question_df in responses_df.groupby(
-        ["question_key", "subject", "use"], sort=False
+    questions_out: list[dict] = []
+    rejected = 0
+
+    for (qkey, subj), question_df in responses_df.groupby(
+        ["question_key", "subject"], sort=False
     ):
-        # choisir l’énoncé le plus long
         question = question_df.loc[
             question_df["question"].str.len().idxmax(), "question"
         ]
-
-        obj = build_question_object(
-            question, subj, question_df, src_name, author, use=use
-        )
+        obj = build_question_object(question, subj, question_df, src_name, author)
         if obj is None:
             rejected += 1
             continue
-
-        qm = QuestionModel(**obj)
-
-        # Vérif applicative: pas d’index, on compare question normalisée côté service
-        if ServiceQuestion.exists(qm.question, qm.subject, qm.use):
-            rejected += 1
-            rapport_etl(
-                "DUP_SKIPPED",
-                f"q='{qm.question}'",
-                file=src_name,
-                line=int(question_df["source_idx"].min()),
-            )
-            continue
-
-        # Insert in Mongo
-        ServiceQuestion.create(qm)
-        accepted += 1
-        rapport_etl(
-            "QUESTION_INSERTED",
-            f"count={len(qm.responses)} correct={sum((getattr(r,'isCorrect',None) is True) or (isinstance(r,dict) and r.get('isCorrect') is True) for r in qm.responses)} q='{qm.question}'",
+        questions_out.append(obj)
+        line_hint = (
+            int(question_df["source_idx"].min())
+            if "source_idx" in question_df.columns
+            else None
+        )
+        log_etl(
+            "QUESTION_OK",
+            f"count={len(obj['responses'])} correct="
+            f"{sum(('isCorrect' in r) for r in obj['responses'])} q='{question}'",
             file=src_name,
-            line=int(question_df["source_idx"].min()),
+            line=line_hint,
         )
 
-    total = accepted + rejected
-    msg = f"Questions accepted: {accepted} | rejected: {rejected} | total: {total}"
-    rapport_etl("SUMMARY", file=src_name, message=msg)
-    return {"accepted": accepted, "rejected": rejected, "total": total}
+    # JSON output
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(questions_out, f, ensure_ascii=False, indent=2)
+
+    stats = {
+        "accepted": len(questions_out),
+        "rejected": rejected,
+        "total": len(questions_out) + rejected,
+        "json_path": str(out_path),
+    }
+    return stats
 
 
 def process_and_export_csv(csv_path, author=None):
     """
-    Process a CSV from data/in, insert into Mongo, and return statistics.
+    .   Process a CSV from data/in,
+        generate a JSON, and return statistics.
     """
     # Ensure folders exist
-    for d in [DATA_IN, DATA_TREATED, DATA_LOG]:
+    for d in [DATA_IN, DATA_TREATED, DATA_LOG, DATA_JSON]:
         d.mkdir(parents=True, exist_ok=True)
 
-    # Connect to Mongo
-    ServiceMongo.connect()
-    try:
-        # Step 1: Read CSVs
-        df_all = read_csv(DATA_IN, DATA_TREATED, DATA_LOG)
-        if df_all.empty:
-            raise ValueError("No valid data from uploaded CSV")
+    # Step 1: Read CSVs
+    df_all = read_csv(DATA_IN, DATA_TREATED, DATA_LOG)
+    if df_all.empty:
+        raise ValueError("No valid data from uploaded CSV")
 
-        # Step 2: Expand responses to long format
-        responses_df = expand_responses_with_flags(df_all)
+    # Step 2: Expand responses to long format
+    responses_df = expand_responses_with_flags(df_all)
 
-        # Step 3: Export to Mongo
-        src_name = csv_path.name
-        stats = export_questions_to_mongo(src_name, responses_df, author)
-        return stats
-    finally:
-        ServiceMongo.disconnect()
+    # Step 3: Export JSON per source file
+    src_name = csv_path.name
+    stats = export_questions_to_json(src_name, responses_df, author)
+    stats["message"] = (
+        f"Questions accepted: {stats['accepted']} | rejected: {stats['rejected']} | total: {stats['total']}"
+    )
+    # log final result
+    log_etl("SUMMARY", file=src_name, message=stats["message"])
+    return stats
 
 
 # -------------- main ------------------
@@ -401,6 +407,4 @@ if __name__ == "__main__":
     else:
         csv_path = files[0]
         stats = process_and_export_csv(csv_path, author=None)
-        print(
-            f"Questions accepted: {stats['accepted']} | rejected: {stats['rejected']} | total: {stats['total']}"
-        )
+        print(stats["message"])
