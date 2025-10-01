@@ -24,7 +24,7 @@ async def get_login(request: Request) -> HTMLResponse:
     )
 
 
-@router.post("/connect", tags=["auth"])
+@router.post("/connect", tags=["auth"], name="login_connect")
 def login_connect(payload: dict = Body(...)):
     """Connect."""
     # Check required fields in the request

@@ -108,36 +108,3 @@ def require_admin(user=Depends(get_current_user)):
     if "admin" not in roles:
         raise HTTPException(status_code=403)
     return user
-
-
-# --- API ---
-
-
-@router.post("/login")
-def login(payload: dict = Body(...)):
-    # Check required fields in the request
-    username = payload.get("username")
-    password = payload.get("password")
-
-    if not username or not password:
-        raise HTTPException(status_code=400, detail="username et password requis")
-
-    # Look up the user in the database
-    user = get_user_by_username(username)
-
-    if not user or not bcrypt.verify(password, user[2]):  # user[2] = password_hash
-        insert_auth_log(
-            user[0] if user else None, username, "failed_login", "/auth/login", 401
-        )
-        raise HTTPException(status_code=401, detail="invalid credentials")
-
-    if not user[3]:  # user[3] = is_active
-        insert_auth_log(user[0], user[1], "login", "/auth/login", 401)
-        raise HTTPException(status_code=401, detail="user inactive")
-
-    # Generate JWT token
-    tok = create_token(sub=int(user[0]), username=user[1])
-    insert_auth_log(user[0], user[1], "login", "/auth/login", 200)
-
-    # Return a basic response to the client
-    return {"access_token": tok, "token_type": "bearer"}
