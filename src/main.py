@@ -74,16 +74,6 @@ async def get_root(request: Request) -> HTMLResponse:
     )
 
 
-@app.get("/login", response_class=HTMLResponse, tags=["login"])
-async def get_login(request: Request) -> HTMLResponse:
-    """Get login."""
-    return get_templates().TemplateResponse(
-        request=request,
-        name="login.html",
-        context={},
-    )
-
-
 @app.get("/{rest_of_path:path}", tags=["others"])
 async def catch_other_paths(request: Request, rest_of_path: str) -> HTMLResponse:
     """Catch other paths."""
