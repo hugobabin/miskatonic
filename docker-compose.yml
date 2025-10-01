@@ -8,7 +8,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./bdd/mongodb:/data/db
+      - ./db/mongodb:/data/db
     networks:
       - miskatonic
   mongo-express:
@@ -24,79 +24,47 @@ services:
     depends_on:
       mongo:
         condition: service_started
-
-  
-  miskatonic-backend:
-    container_name: miskatonicback
+  miskatonic:
+    container_name: miskatonic
     ports:
       - 8000:8000
     build:
       context: .
-      dockerfile: Dockerfile.back
+      dockerfile: Dockerfile.miskatonic
     volumes:
-      - ./:/usr/src
-      - .env:/usr/src/.env
-      - ./promtail-logs:/var/log
+      - ./src:/usr/src/app
+      - .env:/usr/src/app/.env
+      - ./monitoring/promtail-logs:/var/log
     networks:
       - miskatonic
     depends_on:
       mongo:
-        condition: service_started
-  miskatonic-frontend:
-    container_name: miskatonicfront
-    ports:
-      - 8082:8082
-    build:
-      context: .
-      dockerfile: Dockerfile.front
-    volumes:
-      - ./frontend:/usr/share/nginx/html/
-    networks:
-      - miskatonic
-    depends_on:
-      mongo:
-        condition: service_started
-      miskatonic-backend:
         condition: service_started
 
   # Prometheus/Grafana config with cAdvisor and redis
-  mailpit:
-    image: axllent/mailpit:latest
-    container_name: mailpit
-    ports:
-      - "8025:8025"   # UI Web
-      - "1025:1025"   # SMTP
-    networks: [miskatonic]
   grafana:
-    image: grafana/grafana-oss:latest
+    image: grafana/grafana
     container_name: grafana
     restart: unless-stopped
     ports:
-      - '3000:3000'
+     - '3000:3000'
     volumes:
-     - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana-storage:/var/lib/grafana
+      - ./config/grafana.ini:/etc/grafana/grafana.ini:ro
     depends_on:
+      - loki
       - mailpit
-    environment:
-    - GF_SECURITY_ADMIN_USER=admin
-    - GF_SECURITY_ADMIN_PASSWORD=admin123
-    - GF_AUTH_ANONYMOUS_ENABLED=false
-    - GF_SMTP_ENABLED=true
-    - GF_SMTP_HOST=mailpit:1025
-    - GF_SMTP_FROM_ADDRESS=alerts@miskatonic.local
-    - GF_SMTP_FROM_NAME=Grafana
-    - GF_SMTP_STARTTLS_POLICY=NoStartTLS
-    - GF_SMTP_SKIP_VERIFY=true
-    networks: [miskatonic]
+    networks:
+      - miskatonic
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
     ports:
     - 9090:9090
-    volumes:
-    - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     command:
     - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+    - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     depends_on:
     - cadvisor
     networks:
@@ -123,26 +91,50 @@ services:
     networks:
       - miskatonic
   node_exporter:
-    image: prom/node-exporter:latest
+    image: quay.io/prometheus/node-exporter:latest
     container_name: node_exporter
-    restart: unless-stopped
+    command:
+      - '--path.rootfs=/host'
+      - '--collector.filesystem.ignored-mount-points=^/(run|var/lib/docker/.+)($|/)' 
+      - '--collector.filesystem.ignored-fs-types=tmpfs,devtmpfs'
+    network_mode: host
+    pid: host
     ports:
-      - "9100:9100"
-    networks: [miskatonic]
-  loki:
-    user: "0:0" 
-    image: grafana/loki:2.9.0
-    container_name: loki
+    - 9100:9100
+    depends_on:
+    - grafana
     restart: unless-stopped
-    ports:
-      - "3100:3100"
-    command: -config.file=/etc/monitoring/local-config.yaml
     volumes:
-      - ./monitoring/local-config.yaml:/etc/monitoring/local-config.yaml
-      - ./monitoring/data:/loki
-    networks: [miskatonic]
-volumes:
-      grafana_data: {}
+      - '/:/host:ro'
+  loki:
+    container_name: loki
+    image: grafana/loki
+    ports:
+      - 3100:3100
+    volumes:
+      - ./config/loki.yml:/etc/loki/loki-config.yaml
+    networks:
+      - miskatonic
+  promtail:
+    container_name: promtail
+    image: grafana/promtail
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./config/promtail.yml:/etc/promtail/config.yml
+      - ./monitoring/promtail-logs:/var/log
+    depends_on:
+      - loki
+    networks:
+      - miskatonic
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    ports:
+      - "8025:8025"   # UI Web
+      - "1025:1025"   # SMTP
+    networks:
+      - miskatonic
+
 networks:
   miskatonic:
     driver:
