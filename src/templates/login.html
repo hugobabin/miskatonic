@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Miskatonic - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{{ url_for('static', path='/styles.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', path='/main.js') }}"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <!-- Full height hero -->
+    <section class="hero is-fullheight">
+        <div class="hero-body">
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-4-desktop is-6-tablet">
+                        <div class="box">
+                            <h1 class="title has-text-centered">Miskatonic</h1>
+                            <h2 class="subtitle has-text-centered">Se connecter pour continuer</h2>
+
+                            <!-- Login form -->
+                            <form method="post" action="urlforfoo">
+                                <div class="field">
+                                    <label class="label">Utilisateur</label>
+                                    <div class="control has-icons-left">
+                                        <input class="input" type="text" name="username" placeholder="jeansaitrien"
+                                            required>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">Mot de passe</label>
+                                    <div class="control has-icons-left">
+                                        <input class="input" type="password" name="password" placeholder="********"
+                                            required>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <button class="button is-primary is-fullwidth">Se connecter</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Optional footer -->
+    <footer class="footer">
+        <div class="content has-text-centered is-size-7">
+            <p>Miskatonic University. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

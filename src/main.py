@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 
+import arel
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, ORJSONResponse
@@ -10,7 +11,7 @@ from routers.question import router as questions_router
 from routers.quiz import router as quizs_router
 from services.log import ServiceLog
 from services.mongo import ServiceMongo
-from services.util import get_templates
+from services.util import ServiceUtil, get_templates
 
 
 @asynccontextmanager
@@ -41,6 +42,14 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(questions_router)
 app.include_router(quizs_router)
 
+if _debug := ServiceUtil.get_env("DEBUG"):
+    hot_reload = arel.HotReload(paths=[arel.Path(".")])
+    app.add_websocket_route("/hot-reload", route=hot_reload, name="hot-reload")
+    app.add_event_handler("startup", hot_reload.startup)
+    app.add_event_handler("shutdown", hot_reload.shutdown)
+    get_templates().env.globals["DEBUG"] = _debug
+    get_templates().env.globals["hot_reload"] = hot_reload
+
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception) -> ORJSONResponse:
@@ -63,11 +72,21 @@ async def get_root(request: Request) -> HTMLResponse:
     )
 
 
+@app.get("/login", response_class=HTMLResponse, tags=["login"])
+async def get_login(request: Request) -> HTMLResponse:
+    """Get login."""
+    return get_templates().TemplateResponse(
+        request=request,
+        name="login.html",
+        context={},
+    )
+
+
 @app.get("/{rest_of_path:path}", tags=["others"])
 async def catch_other_paths(request: Request, rest_of_path: str) -> HTMLResponse:
     """Catch other paths."""
     return get_templates().TemplateResponse(
         request=request,
-        name="index.html",
+        name="login.html",
         context={},
     )
