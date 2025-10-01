@@ -6,6 +6,7 @@ from fastapi.responses import HTMLResponse, ORJSONResponse
 from fastapi.staticfiles import StaticFiles
 from prometheus_fastapi_instrumentator import Instrumentator
 
+from routers.login import router as login_router
 from routers.question import router as questions_router
 from routers.quiz import router as quizs_router
 from services.log import ServiceLog
@@ -40,6 +41,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(questions_router)
 app.include_router(quizs_router)
+app.include_router(login_router)
 
 
 @app.exception_handler(Exception)

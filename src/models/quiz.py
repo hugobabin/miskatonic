@@ -3,8 +3,9 @@
 from datetime import datetime
 from typing import TypedDict
 
-from models.question import QuestionModel
 from pydantic import BaseModel, ConfigDict, Field
+
+from models.question import QuestionModel
 from services.util import ObjectIdValidator
 
 
