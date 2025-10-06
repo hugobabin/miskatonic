@@ -2,11 +2,12 @@ import pandas as pd
 import shutil
 from pathlib import Path
 from datetime import datetime, timezone
+from rapidfuzz import fuzz
+
 from src.services.mongo import ServiceMongo
 from src.services.question import ServiceQuestion
 from src.models.question import QuestionModel
 from src.services.util import ServiceUtil
-from rapidfuzz import fuzz
 from src.services.mongo import ServiceMongo
 
 # ----- Folders -----
@@ -79,7 +80,7 @@ def rapport_etl(type_evenement, message, data_log=DATA_LOG, file="log", line=Non
             }
         ]
     )
-    row.to_csv(log_file, mode="a", index=False, header=header, sep=";")
+    row.to_csv(log_file, mode="a", index=False, header=header, sep=";",encoding="utf-8-sig")
 
 
 def distinct_from_mongo(col, field: str) -> list[str]:
@@ -172,8 +173,7 @@ def transform_fuzzy(df: pd.DataFrame, log_fn):
             if sc > THRESHOLD_FUZZY:
                 log_fn(
                     "AUTO_CORRECT_SUBJECT",
-                    f"line={int(row['source_idx'])} field=subject from='{s_in}' to='{s_out}' "
-                    f"score={sc:.1f}, file='{row['source_file']}'",
+                    f"from='{s_in}' to='{s_out}'",
                     file=row["source_file"],
                     line=int(row["source_idx"]),
                 )
@@ -445,7 +445,8 @@ def process_and_export_csv(csv_path, author=None):
         # Step 4: Export to Mongo
         src_name = csv_path.name
         stats = export_questions_to_mongo(src_name, responses_df, author)
-        return stats
+        log_path=Path("data/log") / f"rapport_{Path(src_name).stem}.csv"
+        return stats, log_path
     finally:
         ServiceMongo.disconnect()
 

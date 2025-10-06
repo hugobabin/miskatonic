@@ -16,5 +16,6 @@ def save_file_to_data_in(filename: str, data: bytes) -> Path:
 
 def run_etl_from_upload(filename: str, data: bytes, author: str | None):
     csv_path = save_file_to_data_in(filename, data)
-    stats = process_and_export_csv(csv_path, author=author)
-    return csv_path.name, stats
+    stats, log_path = process_and_export_csv(csv_path, author=author)
+
+    return stats,log_path

@@ -32,9 +32,11 @@ services:
       context: .
       dockerfile: Dockerfile.miskatonic
     volumes:
-      - ./src:/usr/src/app
-      - .env:/usr/src/app/.env
+      - ./src:/app/src 
+      - .env:/app/.env
+      - ./data:/app/data
       - ./monitoring/promtail-logs:/var/log
+      - ./bdd:/app/bdd
     networks:
       - miskatonic
     depends_on:

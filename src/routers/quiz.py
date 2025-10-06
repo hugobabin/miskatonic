@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, ORJSONResponse
 
-from models.quiz import QuizGenerator
-from services.quiz import ServiceQuiz
-from services.util import get_templates, handle_request_success
+from src.models.quiz import QuizGenerator
+from src.services.quiz import ServiceQuiz
+from src.services.util import get_templates, handle_request_success
 
 router = APIRouter(
     prefix="/quizs",

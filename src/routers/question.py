@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, ORJSONResponse
 
-from models.question import QuestionModel
-from services.question import ServiceQuestion
-from services.util import get_templates, handle_request_success
+from src.models.question import QuestionModel
+from src.services.question import ServiceQuestion
+from src.services.util import get_templates, handle_request_success
 
 router = APIRouter(
     prefix="/questions",

@@ -3,16 +3,20 @@
 import os
 import re
 import unicodedata
-from typing import Annotated, Any
 
+from typing import Annotated, Any
 from dotenv import load_dotenv
 from fastapi import Request
 from fastapi.responses import ORJSONResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BeforeValidator
+from pathlib import Path
 
-from services.log import ServiceLog
+from src.services.log import ServiceLog
 
+BASE_DIR = Path(__file__).resolve().parents[2] 
+ENV_PATH = BASE_DIR / ".env"
+TEMPLATES_DIR = Path(__file__).resolve().parent.parent / "templates"
 
 class ServiceUtil:
     """Static class for handling useful functions."""
@@ -20,7 +24,7 @@ class ServiceUtil:
     @staticmethod
     def load_env() -> None:
         """Load environment file."""
-        load_dotenv(".env")
+        load_dotenv(ENV_PATH)
 
     @staticmethod
     def get_env(var: str, default: str = "") -> str:
@@ -48,7 +52,7 @@ def handle_request_success(
     request: Request,
     data: Any = None,  # noqa: ANN401
     message: str | None = None,  # noqa: FA102
-    status_code: int = 201,
+    status_code: int = 200,
 ) -> ORJSONResponse:
     """Standardize successful responses with logging."""
     ServiceLog.send_info(f"{request.url.path} -> {status_code}")
@@ -60,7 +64,8 @@ def handle_request_success(
 
 def get_templates() -> Jinja2Templates:
     """Get Jinja2Templates."""
-    return Jinja2Templates(directory="templates")
+    return Jinja2Templates(directory=str(TEMPLATES_DIR.resolve()))
+
 
 
 ObjectIdValidator = Annotated[str, BeforeValidator(ensure_str)]

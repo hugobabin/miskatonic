@@ -2,10 +2,9 @@
 
 from datetime import datetime
 from typing import TypedDict
-
 from pydantic import BaseModel, ConfigDict, Field
 
-from services.util import ObjectIdValidator
+from src.services.util import ObjectIdValidator
 
 
 class ResponseModel(BaseModel):
@@ -18,7 +17,7 @@ class ResponseModel(BaseModel):
 class QuestionModel(BaseModel):
     """Question."""
 
-    id: ObjectIdValidator | None = Field(alias="_id")  # noqa: FA102
+    id: ObjectIdValidator | None = Field(default=None, alias="_id")
     question: str
     subject: str
     use: str
