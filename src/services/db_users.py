@@ -1,5 +1,6 @@
-# create_db_simple.py
+
 import sqlite3
+
 from pathlib import Path
 from passlib.hash import bcrypt
 
