@@ -48,7 +48,7 @@ def handle_request_success(
     request: Request,
     data: Any = None,  # noqa: ANN401
     message: str | None = None,  # noqa: FA102
-    status_code: int = 201,
+    status_code: int = 200,
 ) -> ORJSONResponse:
     """Standardize successful responses with logging."""
     ServiceLog.send_info(f"{request.url.path} -> {status_code}")

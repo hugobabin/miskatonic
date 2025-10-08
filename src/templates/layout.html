@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}Miskatonic • Quiz{% endblock %}</title>
+  <link href="{{ url_for('static', path='/styles.css') }}" rel="stylesheet">
+  <style>
+    /* colle ton CSS existant ici (header, aside, layout, table, etc.) */
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">Miskatonic • Quiz</div>
+    <form action="{{ url_for('logout') }}" method="get">
+      <button type="submit">Déconnexion</button>
+    </form>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <ul>
+        <li><a href="{{ url_for('questions_page') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('questions_page') }}">Questions</a></li>
+        <li><a href="#">Générer un quiz</a></li>
+        <li><a href="{{ url_for('etl_page') }}">Importer questions</a></li>
+      </ul>
+    </aside>
+
+    <main id="main">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>

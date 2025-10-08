@@ -1,25 +1,11 @@
-# backend/services/authentification.py
-from pathlib import Path
+# src/services/authentification.py
 import sqlite3
-from datetime import datetime, timedelta, timezone
-import jwt
-from fastapi import APIRouter, HTTPException, status, Depends, Body
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from passlib.hash import bcrypt
-import os
-from dotenv import load_dotenv
+
+from pathlib import Path
 
 # ------ Config --------
 ROOT = Path(__file__).resolve().parents[2]
-DB_PATH = ROOT / "db" / "quiz_users.sqlite"
-load_dotenv()
-# Secret key used to sign and verify JWT tokens
-SECRET = os.getenv("SECRET_KEY")
-# Algorithm used to decode and verify JWT tokens
-ALGO = "HS256"
-ACCESS_MIN = 60
-# Reusable HTTPBearer instance to extract the token from requests
-bearer = HTTPBearer(auto_error=True)
+DB_PATH = ROOT / "bdd" / "quiz_users.sqlite"
 
 
 # --- Connexion DB ---
@@ -60,51 +46,3 @@ def insert_auth_log(user_id, username, action, route, status_code):
             (user_id, username, action, route, status_code),
         )
         c.commit()
-
-
-# --- JWT ---
-def create_token(sub, username=None, role=None):
-    now = datetime.now(timezone.utc)
-    payload = {
-        "sub": sub,
-        "iat": int(now.timestamp()),
-        "exp": int((now + timedelta(minutes=ACCESS_MIN)).timestamp()),
-    }
-    if username:
-        payload["username"] = username
-    if role:
-        payload["role"] = role
-    return jwt.encode(payload, SECRET, algorithm=ALGO)
-
-
-def decode_token(token):
-    return jwt.decode(token, SECRET, algorithms=[ALGO])
-
-
-# --- Dépendances ---
-def get_current_user(cred: HTTPAuthorizationCredentials = Depends(bearer)):
-    try:
-        payload = decode_token(cred.credentials)
-    except Exception:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-    sub = payload.get("sub")
-    if sub is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-    user = get_user_by_id(int(sub))
-    if not user or not user[3]:  # colonne is_active
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-    return user
-
-
-def require_teacher(user=Depends(get_current_user)):
-    roles = get_roles_for_user(int(user[0]))
-    if "teacher" not in roles:
-        raise HTTPException(status_code=403)
-    return user
-
-
-def require_admin(user=Depends(get_current_user)):
-    roles = get_roles_for_user(int(user[0]))
-    if "admin" not in roles:
-        raise HTTPException(status_code=403)
-    return user

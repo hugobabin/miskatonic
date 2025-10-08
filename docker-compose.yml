@@ -35,6 +35,7 @@ services:
       - ./src:/usr/src/app
       - .env:/usr/src/app/.env
       - ./monitoring/promtail-logs:/var/log
+      - ./db:/usr/src/db
     networks:
       - miskatonic
     depends_on:
