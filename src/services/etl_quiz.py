@@ -1,14 +1,18 @@
-import pandas as pd
+"""ETL module for processing and cleaning quiz questions.
+Handles extraction, transformation (including fuzzy correction), and loading into MongoDB.
+"""
+
 import shutil
-from pathlib import Path
 from datetime import datetime, timezone
+from pathlib import Path
+
+import pandas as pd
 from rapidfuzz import fuzz
 
+from src.models.question import QuestionModel
 from src.services.mongo import ServiceMongo
 from src.services.question import ServiceQuestion
-from src.models.question import QuestionModel
 from src.services.util import ServiceUtil
-from src.services.mongo import ServiceMongo
 
 # ----- Folders -----
 DATA_IN = Path("data/in")
@@ -41,9 +45,10 @@ MAPPING_CSV_TO_CIBLE = {
     "remarque": "remark",
 }
 
-THRESHOLD_FUZZY = 90 # for typo detection
+THRESHOLD_FUZZY = 90  # for typo detection
 
-#----- Utilities -----
+# ----- Utilities -----
+
 
 def clean_col(col):
     """Normalize column names: lowercase, trim spaces, replace spaces with underscore."""
@@ -64,10 +69,10 @@ def get_csv_files(folder):
 
 def rapport_etl(type_evenement, message, data_log=DATA_LOG, file="log", line=None):
     """Append ETL events to a daily log CSV in data/log."""
-    now       = datetime.now()
-    ts        = now.strftime("%Y-%m-%d %H:%M:%S")
+    now = datetime.now()
+    ts = now.strftime("%Y-%m-%d %H:%M:%S")
     file_name = Path(file).stem
-    log_file  = data_log / f"rapport_{file_name}.csv"
+    log_file = data_log / f"rapport_{file_name}.csv"
     header = not log_file.exists()
     row = pd.DataFrame(
         [
@@ -80,15 +85,19 @@ def rapport_etl(type_evenement, message, data_log=DATA_LOG, file="log", line=Non
             }
         ]
     )
-    row.to_csv(log_file, mode="a", index=False, header=header, sep=";",encoding="utf-8-sig")
+    row.to_csv(
+        log_file, mode="a", index=False, header=header, sep=";", encoding="utf-8-sig"
+    )
 
 
 def distinct_from_mongo(col, field: str) -> list[str]:
     """Retourne la liste des valeurs distinctes pour un champ donné en base Mongo."""
     return [v for v in col.distinct(field) if isinstance(v, str) and v.strip()]
 
+
 # ------------------ Read + mapping + checks ------------------
 def read_csv(data_in, data_treated, data_log):
+    """Read and validate a CSV file for ETL processing."""
     all_rows = []
 
     for file_path in get_csv_files(data_in):
@@ -97,11 +106,14 @@ def read_csv(data_in, data_treated, data_log):
         # 1. raw read
         try:
             df = pd.read_csv(file_path)
-        except Exception as e:
+        except (
+            FileNotFoundError,
+            pd.errors.EmptyDataError,
+            pd.errors.ParserError,
+        ) as e:
             rapport_etl("read_csv", str(e), data_log, file=file_name)
             move_file(file_path, data_treated)
             continue
-
         # 2. normalize column names
         df.columns = [clean_col(col) for col in df.columns]
 
@@ -138,7 +150,10 @@ def read_csv(data_in, data_treated, data_log):
 
     return pd.concat(all_rows, ignore_index=True) if all_rows else pd.DataFrame()
 
-def fuzzy_value(val: str, ref: list[str], _field: str, threshold: int = THRESHOLD_FUZZY) -> str:
+
+def fuzzy_value(
+    val: str, ref: list[str], _field: str, threshold: int = THRESHOLD_FUZZY
+) -> str:
     """Retourne la valeur corrigée si proche d’une valeur existante, sinon garde telle quelle."""
     if not ref:
         ref.append(val)
@@ -147,22 +162,21 @@ def fuzzy_value(val: str, ref: list[str], _field: str, threshold: int = THRESHOL
     score = fuzz.ratio(val, best)
     if score > threshold and best != val:
         return best
-    ref.append(val)   # new value becomes reference
+    ref.append(val)  # new value becomes reference
     return val
-    
-# ------------------ Transform ------------------
 
+
+# ------------------ Transform ------------------
 def transform_fuzzy(df: pd.DataFrame, log_fn):
+    """Apply fuzzy string matching to clean subject and use fields."""
     # collection retrieval in Mongo
     col = ServiceMongo.get_collection("questions")
 
     subjects_ref = distinct_from_mongo(col, "subject")
-    uses_ref     = distinct_from_mongo(col, "use")
+    uses_ref = distinct_from_mongo(col, "use")
 
     df["subject_input"] = df["subject"].fillna("").astype(str).str.strip()
-    df["use_input"]     = df["use"].fillna("").astype(str).str.strip()
-
-    
+    df["use_input"] = df["use"].fillna("").astype(str).str.strip()
     # loop for logging with line
     for i, row in df.iterrows():
         s_in, u_in = row["subject_input"], row["use_input"]
@@ -236,16 +250,18 @@ def expand_responses_with_flags(df):
                         line=int(row["source_idx"]),
                     )
                 continue
-            records.append({
-                "question": row["question"],
-                "question_key": row["question_key"],     # (for groupby)
-                "subject": row["subject"],
-                "use": row.get("use", ""),
-                "remark":row.get("remark", ""),
-                "response": answers,
-                "isCorrect": i in correct_indices,
-                "source_idx": int(row["source_idx"]),
-            })
+            records.append(
+                {
+                    "question": row["question"],
+                    "question_key": row["question_key"],  # (for groupby)
+                    "subject": row["subject"],
+                    "use": row.get("use", ""),
+                    "remark": row.get("remark", ""),
+                    "response": answers,
+                    "isCorrect": i in correct_indices,
+                    "source_idx": int(row["source_idx"]),
+                }
+            )
     return pd.DataFrame.from_records(records)
 
 
@@ -381,9 +397,13 @@ def export_questions_to_mongo(src_name, responses_df, author=None):
     """
     accepted = rejected = 0
 
-    for (qkey, subj, use), question_df in responses_df.groupby(["question_key","subject","use"], sort=False):
+    for (_, subj, use), question_df in responses_df.groupby(
+        ["question_key", "subject", "use"], sort=False
+    ):
         # choose the longest statement
-        question = question_df.loc[question_df["question"].str.len().idxmax(), "question"]
+        question = question_df.loc[
+            question_df["question"].str.len().idxmax(), "question"
+        ]
 
         obj = build_question_object(
             question, subj, question_df, src_name, author, use=use
@@ -410,7 +430,7 @@ def export_questions_to_mongo(src_name, responses_df, author=None):
         accepted += 1
         rapport_etl(
             "QUESTION_INSERTED",
-            f"count={len(qm.responses)} correct={sum((getattr(r,'isCorrect',None) is True) or (isinstance(r,dict) and r.get('isCorrect') is True) for r in qm.responses)} q='{qm.question}'",
+            f"count={len(qm.responses)} correct={sum((getattr(r, 'isCorrect', None) is True) or (isinstance(r, dict) and r.get('isCorrect') is True) for r in qm.responses)} q='{qm.question}'",
             file=src_name,
             line=int(question_df["source_idx"].min()),
         )
@@ -437,7 +457,7 @@ def process_and_export_csv(csv_path, author=None):
         if df_all.empty:
             raise ValueError("No valid data from uploaded CSV")
         # Step 2: Fuzzy transform
-        df = transform_fuzzy(df_all,rapport_etl)
+        df = transform_fuzzy(df_all, rapport_etl)
 
         # Step 3: Expand responses to long format
         responses_df = expand_responses_with_flags(df)
@@ -445,8 +465,8 @@ def process_and_export_csv(csv_path, author=None):
         # Step 4: Export to Mongo
         src_name = csv_path.name
         stats = export_questions_to_mongo(src_name, responses_df, author)
-        log_path=Path("data/log") / f"rapport_{Path(src_name).stem}.csv"
-        return stats, log_path
+        log_file_path = Path("data/log") / f"rapport_{Path(src_name).stem}.csv"
+        return stats, log_file_path
     finally:
         ServiceMongo.disconnect()
 
@@ -457,8 +477,8 @@ if __name__ == "__main__":
     if not files:
         print("No CSV file found in data/in")
     else:
-        csv_path = files[0]
-        stats = process_and_export_csv(csv_path, author=None)
+        first_csv_path = files[0]
+        stats, log_file_path = process_and_export_csv(first_csv_path, author=None)
         print(
             f"Questions accepted: {stats['accepted']} | rejected: {stats['rejected']} | total: {stats['total']}"
         )

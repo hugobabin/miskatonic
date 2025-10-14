@@ -12,7 +12,7 @@ router = APIRouter(prefix="/etl", tags=["etl"])
 # Role verification dependency
 RequireTeacherOrAdmin = Depends(require_roles({"teacher", "admin"}))
 
-ALLOWED_CT = {"text/csv","application/vnd.ms-excel","application/csv","text/plain"}
+ALLOWED_CT = {"text/csv","application/vnd.ms-excel","application/csv"}
 
 # Directory where ETL rapports are generated
 DATA_LOG = Path("data/log").resolve()
