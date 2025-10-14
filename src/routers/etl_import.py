@@ -1,11 +1,11 @@
-# ...existing code...
-from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, Request
-from fastapi.responses import ORJSONResponse, FileResponse
 from pathlib import Path
 
-from services.secure import require_roles
-from services.etl_adapter import run_etl_from_upload
+from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
+from fastapi.responses import FileResponse, ORJSONResponse
+
 from models.api_etl import EtlImportResponse
+from services.etl_adapter import run_etl_from_upload
+from services.secure import require_roles
 
 router = APIRouter(prefix="/etl", tags=["etl"])
 RequireTeacherOrAdmin = Depends(require_roles({"teacher", "admin"}))
@@ -26,7 +26,6 @@ async def import_csv(
     file: UploadFile = File(..., description="CSV UTF-8"),
     _user=RequireTeacherOrAdmin,
 ) -> ORJSONResponse:
-    # REFACTORING MVT // API REST pour importer CSV : renvoie JSON avec stats ou erreur
     if file.content_type not in ALLOWED_CT:
         return ORJSONResponse(
             content={
@@ -58,11 +57,7 @@ async def import_csv(
 
 @router.get("/rapport/{name}", name="etl_get_rapport")
 def etl_get_rapport(name: str, _user=RequireTeacherOrAdmin):
-    # REFACTORING MVT // Téléchargement du rapport conservé côté API
     rapport_path = (DATA_LOG / name).resolve()
     if not str(rapport_path).startswith(str(DATA_LOG)) or not rapport_path.exists():
         raise HTTPException(404, "Rapport introuvable")
     return FileResponse(rapport_path, media_type="text/csv", filename=name)
-
-
-# ...existing code...
