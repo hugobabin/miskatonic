@@ -1,0 +1,359 @@
+<!-- REFACTORING MVT // Form action points to Flask route 'etl_import' -->
+{% extends "base.html" %}
+
+{% block title %}Import Quiz CSV{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+
+        <h1 class="title mb-5">Questions</h1>
+        <h2 class="subtitle">Gestion des questions</h2>
+
+        <div class="mb-5">
+            <button class="button is-primary" onclick="toggleCreateModal()">+ Nouvelle question</button>
+        </div>
+
+        <!-- Modal Create -->
+        <div class="modal" id="create-question-modal">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Créer une nouvelle question</p>
+                    <button class="delete" onclick="toggleCreateModal()" aria-label="close"></button>
+                </header>
+                <section class="modal-card-body">
+                    <div class="field">
+                        <label>Question</label>
+                        <input class="input" type="text" id="create-question">
+                    </div>
+                    <div class="field">
+                        <label>Sujet</label>
+                        <input class="input" type="text" id="create-subject">
+                    </div>
+                    <div class="field">
+                        <label>Usage</label>
+                        <input class="input" type="text" id="create-use">
+                    </div>
+                    <div class="field">
+                        <label>Réponses</label>
+                        <div id="create-responses">
+                            <label class="checkbox">
+                                Correct
+                                <input type="checkbox" name="correct">
+                            </label>
+                            <input class="input mb-2" type="text" placeholder="Réponse 1">
+                            <label class="checkbox">
+                                Correct
+                                <input type="checkbox" name="correct">
+                            </label>
+                            <input class="input mb-2" type="text" placeholder="Réponse 2">
+                        </div>
+                        <button class="button is-small is-link mt-2" onclick="addCreateResponse()">+ Ajouter une
+                            réponse</button>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <button class="button is-success" onclick="createQuestion()">Créer</button>
+                    <button class="button" onclick="toggleCreateModal()">Annuler</button>
+                </footer>
+            </div>
+        </div>
+
+        <ul>
+            {% for question in questions %}
+            <li class="mb-3">
+                <div class="card">
+                    <div class="card-content">
+                        <nav class="level">
+                            <div class="level-left" style="width: 50%;">
+                                {{ question.question }}
+                            </div>
+                            <div class="level-right">
+                                <button onclick="toggleViewModal('{{ question.id }}')">view</button>
+                                <button onclick="toggleEditModal('{{ question.id }}')">edit</button>
+                                <button data-id={{ question.id }}>archive</button>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+                <div class="modal" id="view-question-modal" data-id={{ question.id }}>
+                    <div class="modal-background"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title">Voir {{ question.id }}</p>
+                            <button class="delete" onclick="toggleViewModal('{{ question.id }}')"
+                                aria-label="close"></button>
+                        </header>
+                        <section class="modal-card-body">
+                            <div class="field">
+                                <div class="control">
+                                    <label for="question">Question</label>
+                                    <input class="input" type="text" name="question" id="question"
+                                        value="{{ question.question }}" disabled>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="control">
+                                    <label for="subject">Sujet</label>
+                                    <input class="input" type="text" name="subject" id="subject"
+                                        value="{{ question.subject }}" disabled>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="control">
+                                    <label for="use">Usage</label>
+                                    <input class="input" type="text" name="use" id="use" value="{{ question.use }}"
+                                        disabled>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="control">
+                                    Réponses
+                                    {% for response in question.responses %}
+                                    {% if response.isCorrect %}
+                                    <label class="checkbox">
+                                        Correct
+                                        <input type="checkbox" name="correct" checked>
+                                    </label>
+                                    {% else %}
+                                    <label class="checkbox">
+                                        Correct
+                                        <input type="checkbox" name="correct">
+                                    </label>
+                                    {% endif %}
+                                    <input class="input responseInput" type="text" value="{{ response.answer }}"
+                                        data-correct="{{ response.isCorrect }}" disabled>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </section>
+                        <footer class="modal-card-foot">
+                            <div class="buttons">
+                                <button class="button" onclick="toggleViewModal('{{ question.id }}')">Quitter</button>
+                            </div>
+                        </footer>
+                    </div>
+                </div>
+                <div class="modal" id="edit-question-modal" data-id={{ question.id }}>
+                    <div class="modal-background"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title">Éditer {{ question.id }}</p>
+                            <button class="delete" onclick="toggleEditModal('{{ question.id }}')"
+                                aria-label="close"></button>
+                        </header>
+                        <section class="modal-card-body">
+                            <div class="field">
+                                <div class="control">
+                                    <label for="question">Question</label>
+                                    <input class="input" type="text" name="question" id="question"
+                                        value="{{ question.question }}">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="control">
+                                    <label for="subject">Sujet</label>
+                                    <input class="input" type="text" name="subject" id="subject"
+                                        value="{{ question.subject }}">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="control">
+                                    <label for="use">Usage</label>
+                                    <input class="input" type="text" name="use" id="use" value="{{ question.use }}">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="control">
+                                    <label>Réponses</label>
+                                    <div class="edit-responses" id="edit-responses-{{ question.id }}">
+                                        {% for response in question.responses %}
+                                        {% if response.isCorrect %}
+                                        <label class="checkbox">
+                                            Correct
+                                            <input type="checkbox" name="correct" checked>
+                                        </label>
+                                        {% else %}
+                                        <label class="checkbox">
+                                            Correct
+                                            <input type="checkbox" name="correct">
+                                        </label>
+                                        {% endif %}
+                                        <input class="input mb-2 responseInput" type="text"
+                                            value="{{ response.answer }}" data-correct="{{ response.isCorrect }}">
+                                        {% endfor %}
+                                    </div>
+                                    <button class="button is-small is-link mt-2"
+                                        onclick="addEditResponse('{{ question.id }}')">+ Ajouter une réponse</button>
+                                </div>
+                            </div>
+                        </section>
+                        <footer class="modal-card-foot">
+                            <div class="buttons">
+                                <button class="button is-success"
+                                    onclick="saveQuestion('{{ question.id }}')">Sauvegarder</button>
+                                <button class="button" onclick="toggleEditModal('{{ question.id }}')">Quitter</button>
+                            </div>
+                        </footer>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+
+    const API_BASE = "{{ api_base }}"
+
+    const toggleViewModal = (questionId) => {
+        const modal = document.querySelector(`#view-question-modal[data-id="${questionId}"]`)
+        if (!modal) return
+        modal.classList.toggle("is-active")
+    }
+    const toggleEditModal = (questionId) => {
+        const modal = document.querySelector(`#edit-question-modal[data-id="${questionId}"]`)
+        if (!modal) return
+        modal.classList.toggle("is-active")
+    }
+    const toggleCreateModal = () => {
+        const modal = document.querySelector("#create-question-modal")
+        if (!modal) return
+        modal.classList.toggle("is-active")
+    }
+
+    const addCreateResponse = () => {
+        const container = document.querySelector("#create-responses")
+        const wrapper = document.createElement("div")
+        wrapper.className = "mb-2"
+        wrapper.innerHTML = `
+            <label class="checkbox" style="margin-right:8px;">
+                Correct
+                <input type="checkbox" name="correct">
+            </label>
+            <input class="input" type="text" placeholder="Nouvelle réponse">
+        `
+        container.appendChild(wrapper)
+    }
+
+    const addEditResponse = (questionId) => {
+        const container = document.querySelector(`#edit-responses-${questionId}`)
+        if (!container) return
+        const wrapper = document.createElement("div")
+        wrapper.className = "mb-2"
+        wrapper.innerHTML = `
+            <label class="checkbox" style="margin-right:8px;">
+                Correct
+                <input type="checkbox" name="correct">
+            </label>
+            <input class="input responseInput" type="text" placeholder="Nouvelle réponse" data-correct="False">
+        `
+        container.appendChild(wrapper)
+    }
+
+    const readResponsesFromContainer = (container) => {
+        const responses = []
+        Array.from(container.querySelectorAll('input')).forEach(input => {
+            if (input.classList.contains('responseInput') || input.type === 'text') {
+                let isCorrect = false
+                const prev = input.previousElementSibling
+                if (prev) {
+                    const cb = prev.querySelector && prev.querySelector('input[type="checkbox"]')
+                    if (cb) isCorrect = !!cb.checked
+                }
+
+                if (!prev || typeof isCorrect === 'undefined') {
+                    const cb2 = input.parentElement && input.parentElement.querySelector('input[type="checkbox"]')
+                    if (cb2) isCorrect = !!cb2.checked
+                }
+
+                const answer = (input.value || '').trim()
+                if (answer.length > 0) {
+                    responses.push({ answer, isCorrect })
+                }
+            }
+        })
+        return responses
+    }
+
+    const saveQuestion = async (questionId) => {
+        const modal = document.querySelector(`#edit-question-modal[data-id="${questionId}"]`)
+        if (!modal) return
+
+        const questionInput = modal.querySelector('input[name="question"]')
+        const subjectInput = modal.querySelector('input[name="subject"]')
+        const useInput = modal.querySelector('input[name="use"]')
+        const container = modal.querySelector(`#edit-responses-${questionId}`) || modal.querySelector('.edit-responses')
+
+        const responses = readResponsesFromContainer(container)
+
+        const payload = {
+            question: questionInput.value.trim(),
+            subject: subjectInput.value.trim(),
+            use: useInput.value.trim(),
+            remark: "",
+            responses: responses
+        }
+
+        try {
+            const res = await fetch(`${API_BASE}/questions/${questionId}/edit`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload)
+            })
+
+            if (res.ok) {
+                // close and refresh
+                modal.classList.remove("is-active")
+                window.location.reload()
+            } else {
+                const err = await res.json().catch(() => ({ message: res.statusText }))
+                alert("Erreur: " + (err.message || res.statusText))
+            }
+
+        } catch (error) {
+            console.error("Erreur lors de la sauvegarde :", error)
+            alert("Une erreur est survenue lors de la sauvegarde")
+        }
+    }
+
+    const createQuestion = async () => {
+        const modal = document.querySelector("#create-question-modal")
+        if (!modal) return
+
+        const question = document.querySelector("#create-question").value.trim()
+        const subject = document.querySelector("#create-subject").value.trim()
+        const use = document.querySelector("#create-use").value.trim()
+        const container = document.querySelector("#create-responses")
+
+        const responses = readResponsesFromContainer(container)
+
+        const payload = { question, subject, use, remark: "", responses }
+
+        try {
+            const res = await fetch(`${API_BASE}/questions/create`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            if (res.ok) {
+                modal.classList.remove("is-active")
+                window.location.reload()
+            } else {
+                const err = await res.json().catch(() => ({ message: res.statusText }))
+                alert("Erreur: " + (err.message || res.statusText))
+            }
+        } catch (error) {
+            alert("Une erreur est survenue lors de la création")
+            console.error(error)
+        }
+    }
+</script>
+{% endblock %}
