@@ -1,7 +1,8 @@
 import pandas as pd
 import shutil
 import json
-import re, unicodedata
+import re
+import unicodedata
 from pathlib import Path
 from datetime import datetime
 
@@ -250,7 +251,7 @@ def validate_responses_rules(responses):
     if len(responses) < 2:
         errors.append("TOO_FEW_CHOICES")
     if not any(r["isCorrect"] for r in responses):
-        errors.append("MISSING_CORRECT")
+        errors.append("MANQUE_REPONSE_CORRECT")
     return errors
 
 
@@ -395,7 +396,7 @@ def process_and_export_csv(csv_path, author=None):
         f"Questions accepted: {stats['accepted']} | rejected: {stats['rejected']} | total: {stats['total']}"
     )
     # log final result
-    log_etl("SUMMARY", file=src_name, message=stats["message"])
+    log_etl("BILAN", file=src_name, message=stats["message"])
     return stats
 
 
