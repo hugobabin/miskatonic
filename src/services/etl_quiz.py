@@ -9,10 +9,10 @@ from pathlib import Path
 import pandas as pd
 from rapidfuzz import fuzz
 
-from src.models.question import QuestionModel
-from src.services.mongo import ServiceMongo
-from src.services.question import ServiceQuestion
-from src.services.util import ServiceUtil
+from models.question import QuestionModel
+from services.mongo import ServiceMongo
+from services.question import ServiceQuestion
+from services.util import ServiceUtil
 
 # ----- Folders -----
 DATA_IN = Path("data/in")

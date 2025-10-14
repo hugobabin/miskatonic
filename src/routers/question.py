@@ -1,69 +1,50 @@
-from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse, ORJSONResponse
+from fastapi import APIRouter, Request, Body
+from fastapi.responses import ORJSONResponse
 
-from src.models.question import QuestionModel
-from src.services.question import ServiceQuestion
-from src.services.util import get_templates, handle_request_success
+from models.question import QuestionModel, QuestionEditor, QuestionCreator
+from services.question import ServiceQuestion
+from services.util import handle_request_success
 
 router = APIRouter(
     prefix="/questions",
 )
 
 
-@router.get("/", response_class=HTMLResponse, tags=["questions"])
-async def get_questions(request: Request) -> HTMLResponse:
-    """Get all questions from MongoDB."""
+@router.get("/", tags=["questions"], name="questions")
+async def get_questions(request: Request) -> ORJSONResponse:
     questions = ServiceQuestion.list_all()
     questions = [question.model_dump() for question in questions]
-    return get_templates().TemplateResponse(
-        request=request,
-        name="questions.html",
-        context={"questions": questions},
-    )
+    return handle_request_success(request=request, data={"questions": questions})
 
 
-@router.post("/create", tags=["questions"])
-async def create_question(question: QuestionModel, request: Request) -> ORJSONResponse:
-    """Create question in MongoDB based on POST body."""
+@router.post("/create", tags=["questions"], name="create_question")
+async def create_question(
+    request: Request,
+    question: QuestionCreator = Body(...),
+) -> ORJSONResponse:
     ServiceQuestion.create(question=question)
     return handle_request_success(
         request=request,
-        message="Succesfully created question.",
+        data={"success": True, "message": "Question créée avec succès!"},
     )
 
 
-@router.post("/create_bulk", tags=["questions"])
-async def create_questions(
-    questions: list[QuestionModel],
-    request: Request,
-) -> ORJSONResponse:
-    """Create questions in MongoDB based on POST body."""
-    ServiceQuestion.create_all(questions=questions)
-    return handle_request_success(
-        request=request,
-        message="Successfully created questions.",
-    )
-
-
-@router.post("/{question}/archive", tags=["questions"])
+@router.post("/{question}/archive", tags=["questions"], name="archive_question")
 async def archive_question(question: str, request: Request) -> ORJSONResponse:
-    """Archive a question in MongoDB."""
     ServiceQuestion.archive(question_id=question)
     return handle_request_success(
-        request=request,
-        message=f"Successfully archived question with id {question}",
+        request=request, data={"success": True, "message": f"Archived {question}"}
     )
 
 
-@router.post("/{question}/edit", tags=["questions"])
+@router.post("/{question}/edit", tags=["questions"], name="edit_question")
 async def edit_question(
     question: str,
-    data: QuestionModel,
     request: Request,
+    data: QuestionEditor = Body(...),
 ) -> ORJSONResponse:
-    """Edit a question in MongoDB."""
     ServiceQuestion.edit(question_id=question, question=data)
     return handle_request_success(
         request=request,
-        message=f"Successfully edited question with id {question}",
+        data={"success": True, "message": "Question modifiée avec succès!"},
     )

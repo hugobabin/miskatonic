@@ -5,7 +5,7 @@ from pathlib import Path
 from passlib.hash import bcrypt
 
 ROOT = Path(__file__).resolve().parents[2]
-DB_PATH = ROOT / "bdd" / "quiz_users.sqlite"
+DB_PATH = ROOT / "db" / "quiz_users.sqlite"
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 ROLES = ["admin", "teacher", "student"]
 USERS = [

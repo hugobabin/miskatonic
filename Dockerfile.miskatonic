@@ -1,15 +1,10 @@
 FROM python:3.12
 
-# NOUVEAU WORKDIR simplifié
-WORKDIR /app 
+WORKDIR /usr/src/app
 
-# 1. Copie des dépendances (maintenant dans /app)
-COPY requirements.txt . 
-RUN pip install --no-cache-dir -r requirements.txt
 COPY .env .
+COPY ./src .
 
-# 2. Copie du code (maintenant dans /app/src)
-COPY ./src ./src 
-ENV FASTAPI_APP_DIR=src
-# 3. Commande de démarrage corrigée pour le nouveau chemin
-CMD [ "python", "-m", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload" ]
+RUN pip install --no-cache-dir -r requirements.txt
+
+CMD [ "fastapi", "dev", "main.py", "--host", "0.0.0.0", "--port", "8000" ]
