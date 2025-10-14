@@ -1,0 +1,111 @@
+<!-- REFACTORING MVT // Adapté pour Flask : url_for('static', filename=...) -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Miskatonic - {% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+    {% block extra_scripts %}{% endblock %}
+
+    <script>
+      // REFACTORING MVT // Expose l'URL de l'API et l'utilisateur courant aux scripts frontend
+      window.API_BASE = "{{ api_base }}";
+      window.API_USER = "{{ current_user | tojson }}";
+    </script>
+</head>
+<body>
+    <!-- Top Navbar -->
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item has-text-weight-bold is-size-5" href="{{ url_for('dashboard') }}">
+                🧙‍♂️ Miskatonic
+            </a>
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="sidebar-menu">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div class="navbar-menu is-active">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a class="button is-small is-light" href="{{ url_for('logout') }}">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main layout -->
+    <div class="columns is-gapless" style="min-height: calc(100vh - 52px); margin-bottom: 0 !important;">
+        <!-- Sidebar -->
+        <aside class="column is-2 is-narrow-mobile is-fullheight has-background-dark p-4" id="sidebar-menu">
+            <ul class="menu-list">
+                <li>
+                    <a href="{{ url_for('dashboard') }}" 
+                    class="has-text-white is-flex is-align-items-center py-2 px-3 mb-1 
+                            {% if request.path == '/dashboard/' %}has-background-primary{% endif %}">
+                        <span class="icon mr-2"><i class="fas fa-tachometer-alt"></i></span> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('questions') }}" 
+                    class="has-text-white is-flex is-align-items-center py-2 px-3 mb-1
+                            {% if request.path.startswith('/questions') %}has-background-primary{% endif %}">
+                        <span class="icon mr-2"><i class="fas fa-question-circle"></i></span> Questions
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('quizs') }}" 
+                    class="has-text-white is-flex is-align-items-center py-2 px-3 mb-1
+                            {% if request.path.startswith('/quizs') %}has-background-primary{% endif %}">
+                        <span class="icon mr-2"><i class="fas fa-book"></i></span> Quizs
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('etl_import') }}" 
+                    class="has-text-white is-flex is-align-items-center py-2 px-3 mb-1
+                            {% if request.path.startswith('/etl') %}has-background-primary{% endif %}">
+                        <span class="icon mr-2"><i class="fas fa-file-upload"></i></span> Import CSV
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+
+        <!-- Page content -->
+        <main class="column is-10 section">
+            {% block content %}
+            <h1 class="title">Bienvenue à Miskatonic</h1>
+            <p>Le contenu de la page s'affichera ici.</p>
+            {% endblock %}
+        </main>
+    </div>
+
+    <!-- Optional footer -->
+    <footer class="footer">
+        <div class="content has-text-centered is-size-7">
+            <p>&copy; {{ current_year }} Miskatonic University</p>
+        </div>
+    </footer>
+
+    <script>
+        // Burger toggle for mobile sidebar
+        document.addEventListener('DOMContentLoaded', () => {
+            const burger = document.querySelector('.navbar-burger');
+            const sidebar = document.querySelector('#sidebar-menu');
+            if (burger && sidebar) {
+                burger.addEventListener('click', () => {
+                    burger.classList.toggle('is-active');
+                    sidebar.classList.toggle('is-hidden-mobile');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

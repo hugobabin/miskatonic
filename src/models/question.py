@@ -52,3 +52,23 @@ class QuestionGetter(BaseModel):
 
     subjects: list[str]
     use: str
+
+
+class QuestionEditor(BaseModel):
+    """QuestionEditor."""
+
+    question: str
+    subject: str
+    use: str
+    remark: str
+    responses: list[ResponseModel]
+
+
+class QuestionCreator(BaseModel):
+    """QuestionCreator."""
+
+    question: str
+    subject: str
+    use: str
+    remark: str
+    responses: list[ResponseModel]

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Questions{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  window.API_BASE = "{{ api_base }}";
+  window.API_USER = {{ current_user|tojson }};
+</script>
+<script src="{{ url_for('static', filename='questions.js') }}" defer></script>
+{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+
+    <!-- Titre -->
+    <div class="level mb-5">
+      <div class="level-left">
+        <div>
+          <h1 class="title">Questions</h1>
+          <h2 class="subtitle mt-2">Gestion des questions</h2>
+        </div>
+      </div>
+      <div class="level-right">
+        <button id="createQuestionBtn" class="button is-primary is-small">Créer une question</button>
+      </div>
+    </div>
+
+    <!-- Filtres et Pagination -->
+    <div class="field is-grouped mb-4">
+      <div class="control">
+        <div class="select is-small">
+          <select id="filterActive">
+            <option value="all">Toutes</option>
+            <option value="active">Actives</option>
+            <option value="archived">Archivées</option>
+          </select>
+        </div>
+      </div>
+      <div class="control">
+        <input type="text" id="filterSubject" placeholder="Sujet" class="input is-small">
+      </div>
+      <nav class="pagination" role="navigation" aria-label="pagination">
+        <div id="pagination"></div>
+      </nav>
+    </div>
+
+    <!-- Questions -->
+    <div id="questionsList" class="columns is-multiline">
+      {% for question in questions %}
+      <div class="column is-one-third question-card" data-id="{{ question['_id'] }}" data-active="{{ question.active }}"
+        data-subject="{{ question.subject|lower }}">
+        <div class="card mb-4">
+          <header class="card-header">
+            <p class="card-header-title">{{ question.question }}</p>
+            <div class="card-header-icon buttons">
+              <button type="button" class="button is-small editQuestionBtn" data-id="{{ question['_id'] }}">✎</button>
+              <!-- REFACTORING MVT // Archiver via JS -> button déclenche fetch vers l'API -->
+              <button class="button is-small is-danger archiveQuestionBtn"
+                data-id="{{ question['_id'] }}">Archiver</button>
+            </div>
+          </header>
+          <div class="card-content">
+            <div class="content">
+              <p><strong>Sujet :</strong> {{ question.subject }}</p>
+              <p><strong>Usage :</strong> {{ question.use }}</p>
+              {% if question.remark %}
+              <p><strong>Remarque :</strong> {{ question.remark }}</p>
+              {% endif %}
+
+              <p><strong>Réponses :</strong></p>
+              {% if question.responses %}
+              <ul>
+                {% for r in question.responses %}
+                <li>{{ r.answer }} {% if r.isCorrect %}✅{% endif %}</li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <p>Aucune réponse</p>
+              {% endif %}
+
+              <!-- Formulaire caché pour JS édition -->
+              <form class="edit-question-form" style="display:none;">
+                <input name="question" value="{{ question.question }}">
+                <input name="subject" value="{{ question.subject }}">
+                <input name="use" value="{{ question.use }}">
+                <input name="remark" value="{{ question.remark }}">
+              </form>
+            </div>
+          </div>
+          <footer class="card-footer">
+            <p class="card-footer-item">Créée le : {{ question.date_creation }}</p>
+            {% if question.date_modification %}
+            <p class="card-footer-item">Modifiée le : {{ question.date_modification }}</p>
+            {% endif %}
+          </footer>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Modal Création / Edition -->
+    <div class="modal" id="questionModal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title" id="modalTitle">Nouvelle question</p>
+          <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+          <input id="questionInput" placeholder="Question" class="input mb-2">
+          <input id="subjectInput" placeholder="Sujet" class="input mb-2">
+          <input id="useInput" placeholder="Usage" class="input mb-2">
+          <input id="remarkInput" placeholder="Remarque" class="input mb-2">
+
+          <div id="responsesContainer"></div>
+          <button id="addResponseBtn" type="button" class="button is-small mt-2">Ajouter une réponse</button>
+        </section>
+        <footer class="modal-card-foot">
+          <button type="button" class="button is-success">Valider</button>
+          <button type="button" class="button">Fermer</button>
+        </footer>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

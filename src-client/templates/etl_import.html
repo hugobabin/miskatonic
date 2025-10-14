@@ -1,0 +1,84 @@
+<!-- REFACTORING MVT // Form action points to Flask route 'etl_import' -->
+{% extends "base.html" %}
+
+{% block title %}Import Quiz CSV{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+
+    <h1 class="title mb-5">Import CSV pour l'ETL</h1>
+    <h2 class="subtitle">Téléversez un fichier CSV pour importer les quiz</h2>
+
+    <!-- Upload form -->
+    <form method="post" action="{{ url_for('etl_import') }}" enctype="multipart/form-data">
+      <div class="field">
+        <label class="label">Fichier CSV</label>
+        <div class="file has-name is-fullwidth">
+          <label class="file-label">
+            <input class="file-input" type="file" name="file" accept=".csv" required>
+            <span class="file-cta">
+              <span class="file-icon">
+                <i class="fas fa-upload"></i>
+              </span>
+              <span class="file-label">Choisir un fichier…</span>
+            </span>
+            <span class="file-name">Aucun fichier sélectionné</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <button class="button is-primary">Importer</button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Alerts -->
+    {% if error %}
+      <div class="notification is-danger mt-4">{{ error }}</div>
+    {% endif %}
+    {% if message %}
+      <div class="notification is-success mt-4">{{ message }}</div>
+    {% endif %}
+
+    <!-- Résultats d'import -->
+    {% if stats %}
+    <div class="card mt-5">
+      <header class="card-header">
+        <p class="card-header-title">Résultat de l'import</p>
+      </header>
+      <div class="card-content">
+        <div class="content">
+          <ul>
+            <li><strong>Acceptées :</strong> {{ stats.accepted }}</li>
+            <li><strong>Rejetées :</strong> {{ stats.rejected }}</li>
+            <li><strong>Total :</strong> {{ stats.total }}</li>
+          </ul>
+
+          {% if rapport_url %}
+            <p class="mt-3">
+              <a class="button is-link is-light" href="{{ rapport_url }}">
+                Télécharger le rapport (CSV)
+              </a>
+            </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+  // Bulma: afficher le nom du fichier choisi
+  const fileInput = document.querySelector('.file-input');
+  if (fileInput) {
+    fileInput.addEventListener('change', () => {
+      const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'Aucun fichier sélectionné';
+      fileInput.closest('.file').querySelector('.file-name').textContent = fileName;
+    });
+  }
+</script>
+{% endblock %}

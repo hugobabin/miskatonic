@@ -5,7 +5,7 @@ from pathlib import Path
 
 # ------ Config --------
 ROOT = Path(__file__).resolve().parents[2]
-DB_PATH = ROOT / "bdd" / "quiz_users.sqlite"
+DB_PATH = ROOT / "db" / "quiz_users.sqlite"
 
 
 # --- Connexion DB ---

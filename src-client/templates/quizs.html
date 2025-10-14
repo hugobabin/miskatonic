@@ -1,0 +1,191 @@
+<!-- REFACTORING MVT // Form action points to Flask route 'etl_import' -->
+{% extends "base.html" %}
+
+{% block title %}Import Quiz CSV{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+
+    <h1 class="title mb-5">Quizs</h1>
+    <h2 class="subtitle">Gestion des quizs</h2>
+
+    <div class="mb-5">
+      <button class="button is-primary" onclick="toggleGenerateModal()">+ Nouveau Quiz</button>
+    </div>
+
+    <div class="modal" id="generate-quiz-modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Générer nouveau quiz</p>
+          <button class="delete" onclick="toggleGenerateModal()" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="field">
+            <div class="control">
+              <label for="totalQuestions">Nombre de questions</label>
+              <input type="number" class="input" name="totalQuestions" id="totalQuestions" , placeholder=2>
+            </div>
+          </div>
+          <div class="field">
+            <div class="control">
+              <label for="subjects">Sujets</label>
+              <input type="text" class="input" name="subjects" id="subjects" , placeholder="BDD,Automation">
+            </div>
+          </div>
+          <div class="field">
+            <div class="control">
+              <label for="use">Usage</label>
+              <input type="text" class="input" name="use" id="use" , placeholder="Test de positionnement">
+            </div>
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <div class="buttons">
+            <button class="button is-success" onclick="generateQuiz()">Valider</button>
+            <button class="button" onclick="toggleGenerateModal()">Quitter</button>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <ul>
+      {% for quiz in quizs %}
+      <li class="mb-3">
+        <div class="card">
+          <div class="card-content">
+            <nav class="level">
+              <div class="level-left" style="width: 50%;">
+                Quiz pour {{ quiz.use }} - {{ quiz.questions|count }} question(s)
+              </div>
+              <div class="level-right">
+                <button onclick="toggleViewModal('{{ quiz.id }}')">view</button>
+                <button data-id={{ quiz.id }}>archive</button>
+              </div>
+            </nav>
+          </div>
+        </div>
+        <div class="modal" id="view-quiz-modal" data-id={{ quiz.id }}>
+          <div class="modal-background"></div>
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <p class="modal-card-title">Voir {{ quiz.id }}</p>
+              <button class="delete" onclick="toggleViewModal('{{ quiz.id }}')" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+              <div class="block">
+                {% for question in quiz.questions %}
+                <div class="box">
+                  <div>{{ question.question }}</div>
+                  <ul>
+                    {% for response in question.responses %}
+                    <li>
+                      - {{ response.answer }} {% if response.isCorrect %} (Correct) {% endif %}
+                    </li>
+                    {% endfor %}
+                  </ul>
+                  <div class="has-text-primary">Sujet : {{ question.subject }}</div>
+                  <div class="has-text-primary">Usage : {{ question.use }}</div>
+                </div>
+                {% endfor %}
+              </div>
+            </section>
+            <footer class="modal-card-foot">
+              <div class="buttons">
+                <button class="button" onclick="toggleViewModal('{{ quiz.id }}')">Quitter</button>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+
+  const API_BASE = "{{ api_base }}"
+
+  const toggleViewModal = (quizId) => {
+    const modal = document.querySelector(`#view-quiz-modal[data-id="${quizId}"]`)
+    if (!modal) return
+    modal.classList.toggle("is-active")
+  }
+  const toggleGenerateModal = () => {
+    const modal = document.querySelector("#generate-quiz-modal")
+    if (!modal) return
+    modal.classList.toggle("is-active")
+  }
+
+  const createQuestion = async () => {
+    const modal = document.querySelector("#create-question-modal")
+    if (!modal) return
+
+    const question = document.querySelector("#create-question").value.trim()
+    const subject = document.querySelector("#create-subject").value.trim()
+    const use = document.querySelector("#create-use").value.trim()
+    const container = document.querySelector("#create-responses")
+
+    const responses = readResponsesFromContainer(container)
+
+    const payload = { question, subject, use, remark: "", responses }
+
+    try {
+      const res = await fetch(`${API_BASE}/questions/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      if (res.ok) {
+        modal.classList.remove("is-active")
+        window.location.reload()
+      } else {
+        const err = await res.json().catch(() => ({ message: res.statusText }))
+        alert("Erreur: " + (err.message || res.statusText))
+      }
+    } catch (error) {
+      alert("Une erreur est survenue lors de la création")
+      console.error(error)
+    }
+  }
+
+  const generateQuiz = async () => {
+    const modal = document.querySelector("#generate-quiz-modal")
+    if (!modal) return
+
+    const total_questions = modal.querySelector("#totalQuestions").value.trim()
+    const subjects = modal.querySelector("#subjects").value.trim().split(",")
+    const use = modal.querySelector("#use").value.trim()
+
+    const payload = {
+      total_questions,
+      subjects,
+      use,
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/quizs/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      if (res.ok) {
+        modal.classList.remove("is-active")
+        window.location.reload()
+      } else {
+        const err = await res.json().catch(() => ({ message: res.statusText }))
+        alert("Erreur: " + (err.message || res.statusText))
+      }
+    } catch (error) {
+      alert("Une erreur est survenue lors de la génération")
+      console.error(error)
+    }
+
+  }
+</script>
+{% endblock %}
