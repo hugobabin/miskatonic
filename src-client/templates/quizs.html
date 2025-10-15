@@ -52,6 +52,7 @@
 
     <ul>
       {% for quiz in quizs %}
+      {% if quiz.active == True %}
       <li class="mb-3">
         <div class="card">
           <div class="card-content">
@@ -60,8 +61,8 @@
                 Quiz pour {{ quiz.use }} - {{ quiz.questions|count }} question(s)
               </div>
               <div class="level-right">
-                <button onclick="toggleViewModal('{{ quiz.id }}')">view</button>
-                <button data-id={{ quiz.id }}>archive</button>
+                <button onclick="toggleViewModal('{{ quiz.id }}')">voir</button>
+                <button onclick="archiveQuiz('{{ quiz.id }}')">archiver</button>
               </div>
             </nav>
           </div>
@@ -99,6 +100,7 @@
           </div>
         </div>
       </li>
+      {% endif %}
       {% endfor %}
     </ul>
 
@@ -122,34 +124,20 @@
     modal.classList.toggle("is-active")
   }
 
-  const createQuestion = async () => {
-    const modal = document.querySelector("#create-question-modal")
-    if (!modal) return
-
-    const question = document.querySelector("#create-question").value.trim()
-    const subject = document.querySelector("#create-subject").value.trim()
-    const use = document.querySelector("#create-use").value.trim()
-    const container = document.querySelector("#create-responses")
-
-    const responses = readResponsesFromContainer(container)
-
-    const payload = { question, subject, use, remark: "", responses }
-
+  const archiveQuiz = async (quizId) => {
     try {
-      const res = await fetch(`${API_BASE}/questions/create`, {
+      const res = await fetch(`${API_BASE}/quizs/${quizId}/archive`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
       })
       if (res.ok) {
-        modal.classList.remove("is-active")
         window.location.reload()
       } else {
         const err = await res.json().catch(() => ({ message: res.statusText }))
         alert("Erreur: " + (err.message || res.statusText))
       }
     } catch (error) {
-      alert("Une erreur est survenue lors de la création")
+      alert("Une erreur est survenue lors de l'archivage")
       console.error(error)
     }
   }
