@@ -62,6 +62,7 @@
 
         <ul>
             {% for question in questions %}
+            {% if question.active == True %}
             <li class="mb-3">
                 <div class="card">
                     <div class="card-content">
@@ -70,9 +71,9 @@
                                 {{ question.question }}
                             </div>
                             <div class="level-right">
-                                <button onclick="toggleViewModal('{{ question.id }}')">view</button>
-                                <button onclick="toggleEditModal('{{ question.id }}')">edit</button>
-                                <button data-id={{ question.id }}>archive</button>
+                                <button onclick="toggleViewModal('{{ question.id }}')">voir</button>
+                                <button onclick="toggleEditModal('{{ question.id }}')">modifier</button>
+                                <button onclick="archiveQuestion('{{ question.id }}')">archiver</button>
                             </div>
                         </nav>
                     </div>
@@ -199,6 +200,7 @@
                     </div>
                 </div>
             </li>
+            {% endif %}
             {% endfor %}
         </ul>
 
@@ -352,6 +354,24 @@
             }
         } catch (error) {
             alert("Une erreur est survenue lors de la création")
+            console.error(error)
+        }
+    }
+
+    const archiveQuestion = async (questionId) => {
+        try {
+            const res = await fetch(`${API_BASE}/questions/${questionId}/archive`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+            })
+            if (res.ok) {
+                window.location.reload()
+            } else {
+                const err = await res.json().catch(() => ({ message: res.statusText }))
+                alert("Erreur: " + (err.message || res.statusText))
+            }
+        } catch (error) {
+            alert("Une erreur est survenue lors de l'archivage")
             console.error(error)
         }
     }

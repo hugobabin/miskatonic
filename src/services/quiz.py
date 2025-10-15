@@ -4,6 +4,8 @@ import random
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
+from bson import ObjectId
+
 from models.quiz import QuizDict, QuizModel
 from services.mongo import ServiceMongo
 from services.question import ServiceQuestion
@@ -29,10 +31,10 @@ class ServiceQuiz:
         return [QuizModel.model_validate(quiz) for quiz in found]
 
     @staticmethod
-    def archive(quiz_id: int) -> None:
+    def archive(quiz_id: str) -> None:
         """Archive a quiz in MongoDB."""
         collection: Collection[QuizDict] = ServiceMongo.get_collection("quizs")
-        query_filter = {"_id": quiz_id}
+        query_filter = {"_id": ObjectId(quiz_id)}
         update_operation = {"$set": {"active": False}}
         collection.update_one(query_filter, update_operation)
 
