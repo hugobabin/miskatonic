@@ -3,14 +3,13 @@ from pathlib import Path
 from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, ORJSONResponse
 
-from models.api_etl import EtlImportResponse
 from services.etl_adapter import run_etl_from_upload
 from services.secure import require_roles
 
 router = APIRouter(prefix="/etl", tags=["etl"])
 RequireTeacherOrAdmin = Depends(require_roles({"teacher", "admin"}))
 
-ALLOWED_CT = {"text/csv", "application/vnd.ms-excel", "application/csv", "text/plain"}
+ALLOWED_CT = {"text/csv","application/vnd.ms-excel","application/csv"}
 
 DATA_LOG = Path("data/log").resolve()
 

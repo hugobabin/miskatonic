@@ -1,3 +1,7 @@
+"""ETL module for processing and cleaning quiz questions.
+Handles extraction, transformation (including fuzzy correction), and loading into MongoDB.
+"""
+
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
@@ -73,9 +77,9 @@ def rapport_etl(type_evenement, message, data_log=DATA_LOG, file="log", line=Non
     row = pd.DataFrame(
         [
             {
-                "timestamp": ts,
-                "file": file,
-                "line": line,
+                "Date": ts,
+                "fichier": file,
+                "ligne": line,
                 "type_evenement": type_evenement,
                 "message": message,
             }
@@ -93,6 +97,7 @@ def distinct_from_mongo(col, field: str) -> list[str]:
 
 # ------------------ Read + mapping + checks ------------------
 def read_csv(data_in, data_treated, data_log):
+    """Read and validate a CSV file for ETL processing."""
     all_rows = []
 
     for file_path in get_csv_files(data_in):
@@ -101,11 +106,14 @@ def read_csv(data_in, data_treated, data_log):
         # 1. raw read
         try:
             df = pd.read_csv(file_path)
-        except Exception as e:
+        except (
+            FileNotFoundError,
+            pd.errors.EmptyDataError,
+            pd.errors.ParserError,
+        ) as e:
             rapport_etl("read_csv", str(e), data_log, file=file_name)
             move_file(file_path, data_treated)
             continue
-
         # 2. normalize column names
         df.columns = [clean_col(col) for col in df.columns]
 
@@ -117,7 +125,7 @@ def read_csv(data_in, data_treated, data_log):
         if missing:
             rapport_etl(
                 "structure",
-                f"Missing columns: {sorted(missing)}",
+                f"Colonnes manquantes: {sorted(missing)}",
                 data_log,
                 file=file_name,
             )
@@ -137,7 +145,7 @@ def read_csv(data_in, data_treated, data_log):
 
         # 8. log and move processed file
         all_rows.append(df)
-        rapport_etl("READ_OK", f"{len(df)} rows to process", data_log, file=file_name)
+        rapport_etl("LECTURE_OK", f"{len(df)} lignes à traiter", data_log, file=file_name)
         move_file(file_path, data_treated)
 
     return pd.concat(all_rows, ignore_index=True) if all_rows else pd.DataFrame()
@@ -159,9 +167,8 @@ def fuzzy_value(
 
 
 # ------------------ Transform ------------------
-
-
 def transform_fuzzy(df: pd.DataFrame, log_fn):
+    """Apply fuzzy string matching to clean subject and use fields."""
     # collection retrieval in Mongo
     col = ServiceMongo.get_collection("questions")
 
@@ -170,7 +177,6 @@ def transform_fuzzy(df: pd.DataFrame, log_fn):
 
     df["subject_input"] = df["subject"].fillna("").astype(str).str.strip()
     df["use_input"] = df["use"].fillna("").astype(str).str.strip()
-
     # loop for logging with line
     for i, row in df.iterrows():
         s_in, u_in = row["subject_input"], row["use_input"]
@@ -180,7 +186,7 @@ def transform_fuzzy(df: pd.DataFrame, log_fn):
             sc = fuzz.ratio(s_in, s_out)
             if sc > THRESHOLD_FUZZY:
                 log_fn(
-                    "AUTO_CORRECT_SUBJECT",
+                    "SUJET_CORRIGE_AUTO",
                     f"from='{s_in}' to='{s_out}'",
                     file=row["source_file"],
                     line=int(row["source_idx"]),
@@ -238,8 +244,8 @@ def expand_responses_with_flags(df):
             if not answers:
                 if i in correct_indices:
                     rapport_etl(
-                        "CORRECT_MISSING_CHOICE",
-                        f"line={int(row['source_idx'])} col={choice_col}, file='{row['source_file']}'",
+                        "REPONSE_CORRECTE_MANQUANTE",
+                        f"ligne={int(row['source_idx'])} col={choice_col},fichier='{row['source_file']}'",
                         file=row["source_file"],
                         line=int(row["source_idx"]),
                     )
@@ -290,12 +296,12 @@ def deduplicate_responses(question_df, src_name):
             if is_correct and not seen[response_text]["isCorrect"]:
                 seen[response_text]["isCorrect"] = True
                 rapport_etl(
-                    "ANSWER_MERGED", f"answer='{response_text}'", file=file_, line=line_
+                    "REPONSE_FUSIONNEE", f"reponse='{response_text}'", file=file_, line=line_
                 )
             else:
                 rapport_etl(
-                    "ANSWER_IGNORED",
-                    f"answer='{response_text}'",
+                    "REPONSE_IGNOREE",
+                    f"reponse='{response_text}'",
                     file=file_,
                     line=line_,
                 )
@@ -312,9 +318,9 @@ def validate_responses_rules(responses):
     """
     errors: list[str] = []
     if len(responses) < 2:
-        errors.append("TOO_FEW_CHOICES")
+        errors.append("TROP_PEU_DE_REPONSE")
     if not any(r["isCorrect"] for r in responses):
-        errors.append("MISSING_CORRECT")
+        errors.append("MANQUE_REPONSE_CORRECTE")
     return errors
 
 
@@ -336,7 +342,7 @@ def build_question_object(question, subj, question_df, src_name, author, use):
             else None
         )
         rapport_etl(
-            "QUESTION_REJECTED",
+            "QUESTION_REFUSEE",
             f"{question} -> {','.join(errors)}",
             file=src_name,
             line=line_hint,
@@ -391,7 +397,7 @@ def export_questions_to_mongo(src_name, responses_df, author=None):
     """
     accepted = rejected = 0
 
-    for (qkey, subj, use), question_df in responses_df.groupby(
+    for (_, subj, use), question_df in responses_df.groupby(
         ["question_key", "subject", "use"], sort=False
     ):
         # choose the longest statement
@@ -412,7 +418,7 @@ def export_questions_to_mongo(src_name, responses_df, author=None):
         if ServiceQuestion.exists(qm.question, qm.subject, qm.use):
             rejected += 1
             rapport_etl(
-                "DUP_SKIPPED",
+                "DOUBLON_IGNORE",
                 f"q='{qm.question}'",
                 file=src_name,
                 line=int(question_df["source_idx"].min()),
@@ -423,14 +429,14 @@ def export_questions_to_mongo(src_name, responses_df, author=None):
         ServiceQuestion.create(qm)
         accepted += 1
         rapport_etl(
-            "QUESTION_INSERTED",
-            f"count={len(qm.responses)} correct={sum((getattr(r,'isCorrect',None) is True) or (isinstance(r,dict) and r.get('isCorrect') is True) for r in qm.responses)} q='{qm.question}'",
+            "QUESTION_INSEREE",
+            f"nb_reponse={len(qm.responses)} nb_correct={sum((getattr(r, 'isCorrect', None) is True) or (isinstance(r, dict) and r.get('isCorrect') is True) for r in qm.responses)} q='{qm.question}'",
             file=src_name,
             line=int(question_df["source_idx"].min()),
         )
 
     total = accepted + rejected
-    msg = f"Questions accepted: {accepted} | rejected: {rejected} | total: {total}"
+    msg = f"Questions acceptees: {accepted} | rejetees: {rejected} | total: {total}"
     rapport_etl("SUMMARY", file=src_name, message=msg)
     return {"accepted": accepted, "rejected": rejected, "total": total}
 
@@ -443,8 +449,7 @@ def process_and_export_csv(csv_path, author=None):
     for d in [DATA_IN, DATA_TREATED, DATA_LOG]:
         d.mkdir(parents=True, exist_ok=True)
 
-    # Connect to Mongo
-    ServiceMongo.connect()
+    
     try:
         # Step 1: Read CSVs
         df_all = read_csv(DATA_IN, DATA_TREATED, DATA_LOG)
@@ -459,10 +464,10 @@ def process_and_export_csv(csv_path, author=None):
         # Step 4: Export to Mongo
         src_name = csv_path.name
         stats = export_questions_to_mongo(src_name, responses_df, author)
-        log_path = Path("data/log") / f"rapport_{Path(src_name).stem}.csv"
-        return stats, log_path
+        log_file_path = Path("data/log") / f"rapport_{Path(src_name).stem}.csv"
+        return stats, log_file_path
     finally:
-        ServiceMongo.disconnect()
+        pass
 
 
 # -------------- main ------------------
@@ -471,8 +476,8 @@ if __name__ == "__main__":
     if not files:
         print("No CSV file found in data/in")
     else:
-        csv_path = files[0]
-        stats = process_and_export_csv(csv_path, author=None)
+        first_csv_path = files[0]
+        stats, log_file_path = process_and_export_csv(first_csv_path, author=None)
         print(
             f"Questions accepted: {stats['accepted']} | rejected: {stats['rejected']} | total: {stats['total']}"
         )

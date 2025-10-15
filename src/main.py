@@ -11,11 +11,13 @@ from routers.question import router as questions_router
 from routers.quiz import router as quizs_router
 from services.log import ServiceLog
 from services.mongo import ServiceMongo
+from services.db_users import main as create_db
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):  # noqa: ANN201, ARG001
     """Handle lifespan."""
+    create_db()
     ServiceMongo.connect()
     ServiceLog.setup()
     ServiceLog.send_info("Backend started.")
