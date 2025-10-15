@@ -18,15 +18,16 @@ Générateur de quizs en ligne.
 - cd src-client && pip install -r requirements.txt
 
 ## Utilisation
-# Lancer le backend
+### Lancer le backend
 - docker compose up (depuis la racine du projet)
-# Lancer le frontend
+### Lancer le frontend
 - source .venv/bin/activate (depuis la racine du projet)
 - cd src-client (depuis la racine du projet)
 - python3 app.py (depuis src-client)
-# URLs importantes
+### URLs importantes
 - Accéder à l'API : localhost:8000/
 - Accéder à Mongo Express (user: user, pwd: user) : localhost:8081/
 - Accéder à Grafana : localhost:3000/
 - Accéder au client (user: admin, pwd: admin123) : localhost:5000/
+
 
